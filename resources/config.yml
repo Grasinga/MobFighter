@@ -1,0 +1,74 @@
+# Default Configuration File for MobFighter!
+# Made by Grasinga.
+# WorldName should be whatever world you are wanting the plugin to work on.
+# CurrentNight is what night it is currently.
+# Creative Immunity is for OPs (It allows you to bypass being set to Survival after anvil repair/combine.)
+# EventNight is the night that events occur on. Default is every 10 nights.
+# MobDrops are the ids of the item you want to sell. 
+# MobDropPrice is the amount you want the corresponding item in MobDrops spot to cost.
+# First spot in MobDrops is IRON_INGOT. The First spot in MobDropPrice is 20, so Iron Ingot sells for $20.
+WorldName: world
+CurrentNight: 0
+Creative Immunity:
+- Grasinga
+EventNight: 5
+MobDrops:
+- IRON_INGOT
+- STRING
+- SULPHUR
+- BONE
+- ROTTEN_FLESH
+- ENDER_PEARL
+- GLASS_BOTTLE
+- SPIDER_EYE
+- CARROT_ITEM
+- POTATO_ITEM
+- GLOWSTONE_DUST
+- SUGAR
+- STICK
+- ARROW
+- REDSTONE
+- GOLD_RECORD
+- GREEN_RECORD
+- RECORD_3
+- RECORD_4
+- RECORD_5
+- RECORD_6
+- RECORD_7
+- RECORD_8
+- RECORD_9
+- RECORD_10
+- RECORD_11
+- RECORD_12
+- DRAGON_EGG
+- SKULL_ITEM
+MobDropPrice:
+- 20
+- 3
+- 3
+- 3
+- 3
+- 20
+- 10
+- 3
+- 20
+- 20
+- 20
+- 20
+- 20
+- 1
+- 20
+- 1000
+- 1000
+- 1000
+- 1000
+- 1000
+- 1000
+- 1000
+- 1000
+- 1000
+- 1000
+- 1200
+- 1000
+- 2500
+- 1500

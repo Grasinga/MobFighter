@@ -1,0 +1,30 @@
+name: MobFighter
+main: net.grasinga.MobFighter.MobFighter
+version: 1.0
+description: >
+             MobFighter!
+commands:
+  mfreload:
+    description: Reloads MobFighter's configuration.
+    permission: MobFighter.mfreload
+  setBoards:
+    description: Initializes scoreboards. Only needs to be used when the plugin is added to server.
+    permission: MobFighter.setboards
+  night:
+    description: Displays what night it is.
+  setnight:
+    description: Sets what night it is.
+    permission: MobFighter.setnight
+  eventnight:
+    description: Sets what nights the events start.
+    permission: MobFighter.eventnight
+  ready:
+    description: Toggle ready status. See who's ready with /ready list
+  getshop:
+    description: Gives the player the shop item.
+  getbook:
+    description: Get's the book specifed with /getbook <nameOfBook>
+  craft:
+    description: Allows player to craft
+  exchange:
+    description: Exchange? Exchange what?
