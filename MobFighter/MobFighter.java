@@ -49,6 +49,9 @@ public class MobFighter extends JavaPlugin {
 	// Variable that allows only one pass of spawnProtection per 30 seconds. (true = event is running) (false = event is not running)
 	private boolean runningProtect = false;
 	
+	// Variable to get players who have readied.
+	public static PlayerNames playerNames = new PlayerNames();
+	
 	// When plugin is starts:
 	public void onEnable() {
 		log("[MobFighter] Enabled!" 
@@ -81,16 +84,16 @@ public class MobFighter extends JavaPlugin {
 		getCommand("getshop").setExecutor(new MobFighterCommands(this));
 		getCommand("getbook").setExecutor(new MobFighterCommands(this));
 		getCommand("getshop").setExecutor(new MobFighterCommands(this));
+		getCommand("eliteshop").setExecutor(new MobFighterCommands(this));
 		getCommand("craft").setExecutor(new MobFighterCommands(this));
 		getCommand("exchange").setExecutor(new MobFighterCommands(this));
 		
 		// Load the configuration file:
-		if(getConfig() == null){
-			getConfig().options().copyDefaults(true);
-			saveConfig();
-		}
-		else
-			getConfig();
+		getConfig().options().copyDefaults(true);
+		saveConfig();
+		
+		// Players can't lose their items when they die.
+		server.dispatchCommand(Bukkit.getConsoleSender(),"gamerule keepInventory true");
 		
 		// Runs the Repeating Task that determines whether is it day or night. (Checks every Minecraft tick.)
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
@@ -111,6 +114,9 @@ public class MobFighter extends JavaPlugin {
 					// When the day first starts: change money to tab view, set players money on tab view, teleport players to spawn, and butcher all mobs.
 					if(startDay)
             		{
+						// Clears ready list.
+						playerNames.removeAll();
+						
 						// Prevents Slimes from spawning and resets global flags.
 						server.dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w "+ worldName + " deny-spawn Slime");
 						
@@ -205,6 +211,9 @@ public class MobFighter extends JavaPlugin {
 	    				// Stuff to run when the night begins:
 	    				if(startNight){
 	    					
+							// Clears ready list.
+							playerNames.removeAll();
+							
 	    					// Increase the number of nights that have passed.
 	    					night++;
 	    					nights++;
@@ -273,7 +282,13 @@ public class MobFighter extends JavaPlugin {
 	    					
 	    				}// End of startNight
 					}// End of player check
-				}// End of night time				
+				}// End of night time
+				
+				// ----------------- Anything that needs to be running whether it's day or night. ------------------------
+				
+				// This allows the /eventnight command to update and take.
+				eventNight = getConfig().getInt("EventNight");
+				
 			}// End of Run
         }, 0L, 1L);// End of Repeating Task
         

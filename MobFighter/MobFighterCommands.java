@@ -40,7 +40,6 @@ public class MobFighterCommands implements CommandExecutor {
 	private boolean night = false;
 	private List<Player> playersOnServer = null;
 	private int numberOfPlayers = 0;
-	private PlayerNames playerNames = new PlayerNames();
 	
 	// Constructor to pass in any needed variables.
 	public MobFighterCommands(MobFighter plugin){
@@ -162,7 +161,7 @@ public class MobFighterCommands implements CommandExecutor {
 				if(!(args.length<=0) && args[0].equalsIgnoreCase("list"))
 				{
 					
-					player.sendMessage("Players Readied: " + ChatColor.GREEN + playerNames.getAllNames());
+					player.sendMessage("Players Readied: " + ChatColor.GREEN + MobFighter.playerNames.getAllNames());
 					return true;
 				}
 				
@@ -175,13 +174,13 @@ public class MobFighterCommands implements CommandExecutor {
 						{
 							countDay++;
 							player.chat(ChatColor.GREEN + "Readied for Day!");
-							playerNames.addName(player.getDisplayName());
+							MobFighter.playerNames.addName(player.getDisplayName());
 							if(countDay >= numberOfPlayers)
 							{
 								countDay = 0;
 								countNight = 0;
 								world.setTime(0);
-								playerNames.removeAll();
+								MobFighter.playerNames.removeAll();
 								return true;
 							}
 							return true;
@@ -192,27 +191,15 @@ public class MobFighterCommands implements CommandExecutor {
 						{
 							countNight++;
 							player.chat(ChatColor.GREEN + "Readied for Night!");
-							playerNames.addName(player.getDisplayName());
+							MobFighter.playerNames.addName(player.getDisplayName());
 							if(countNight >= numberOfPlayers)
 							{
 								countDay = 0;
 								countNight = 0;
 								world.setTime(13700);
-								playerNames.removeAll();
+								MobFighter.playerNames.removeAll();
 								return true;
 							}
-							return true;
-						}
-						
-						// Unready by using /ready after readying up.
-						else
-						{
-							playerNames.removeName(player.getDisplayName());
-							if(countDay > 0)
-								countDay--;
-							else if(countNight > 0)
-								countNight--;
-							player.chat(ChatColor.RED + "Unreadied");
 							return true;
 						}
 							
@@ -225,13 +212,23 @@ public class MobFighterCommands implements CommandExecutor {
 							return false;
 					}
 					
-					// Catches any other possible errors.
 					else
-					{
-						player.sendMessage("Please type: /ready or /ready list");
-						return true;
-					}
+						return false;
+				}// End of has not readied
+				
+				// Unready by using /ready after readying up.
+				else if((getHasReadied(player.getDisplayName())))
+				{
+					MobFighter.playerNames.removeName(player.getDisplayName());
+					if(countDay > 0)
+						countDay--;
+					else if(countNight > 0)
+						countNight--;
+					player.chat(ChatColor.RED + "Unreadied");
+					return true;
 				}
+				
+				return true;
 			}
 			
 			// Command to get the main shop.
@@ -243,6 +240,12 @@ public class MobFighterCommands implements CommandExecutor {
 				paper.setItemMeta(paperMeta);
 				player.getInventory().addItem(paper);
 				player.sendMessage(ChatColor.BLUE + "Right-click the piece of paper to open the shop!");
+			}
+			
+			// Command to get the main shop.
+			else if(commandLabel.equalsIgnoreCase("eliteshop"))
+			{
+				player.openInventory(EliteShop.getShop());
 			}
 			
 			// Command to get helpful books.
@@ -314,14 +317,14 @@ public class MobFighterCommands implements CommandExecutor {
 					fCharge.setItemMeta(meta);
 					
 					// Get item needed by trading in coal (undeadHearts).
-					if(player.getInventory().containsAtLeast(coal, 2304))
+					if(player.getInventory().containsAtLeast(coal, 576))
 					{
 						player.getInventory().clear();
 						player.getInventory().addItem(fCharge);
 					}
 					
 					// Get the armor set if there are five Festering Darkness in the player's inventory.
-					else if(player.getInventory().containsAtLeast(fCharge, 5))
+					else if(player.getInventory().containsAtLeast(fCharge, 1728))
 					{
 						player.getInventory().clear();
 						ItemStack button = new ItemStack(Material.STONE_BUTTON);
@@ -390,7 +393,7 @@ public class MobFighterCommands implements CommandExecutor {
 					star.setItemMeta(meta);
 					
 					// Get the item needed by trading in emeralds (taintedSouls).
-					if(player.getInventory().containsAtLeast(emerald, 2304))
+					if(player.getInventory().containsAtLeast(emerald, 1728))
 					{
 						player.getInventory().clear();
 						player.getInventory().addItem(star);
@@ -487,8 +490,8 @@ public class MobFighterCommands implements CommandExecutor {
 	// Method used to check if a player has done /ready
 	public boolean getHasReadied(String name)
 	{
-		for(int i=0;i<playerNames.getSize();i++)
-			if(playerNames.getName(i).equalsIgnoreCase(name))
+		for(int i=0;i<MobFighter.playerNames.getSize();i++)
+			if(MobFighter.playerNames.getName(i).equalsIgnoreCase(name))
 				return true;
 		return false;
 	}

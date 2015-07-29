@@ -237,7 +237,7 @@ public class ShopMenu {
 		bm.setPages(Arrays.asList(
 				"Welcome to:\nMobFighter!\n\nThis server is a\nmob fighting game!\nYou kill mobs and\npick up their loot\nat night so you\ncan sell it\nduring the day to\nget better gear!\nAs you play you\nmay notice a\n",
 				"message saying \n\"Night: #\" this\nlets you know the\ncurrent night and\nhelps you prepare\nfor the events!\nEvents happen every\nfive waves varying\nfrom fighting the\nEnderdragon, to\nstrolling in a\nmeadow of flowers.\n",
-				"Commands:\n/getshop\n/ready day\n/ready night\n/ready clear\n/ready list\n/night\n/craft\n/call <username>\n/bring <username>\n/exchange\n/getbook <name>",
+				"Commands:\n/getshop\n\n/ready : Toggles ready status!\n\n/ready list\n/night\n/craft\n/call <username>\n/bring <username>\n/exchange\n/getbook <name>",
 				"Emojies Spice up\nchat!\n\nType:\n/help mmemoji\n/help mmemoji 2\n/help mmemoji 3\n\nSee what emojies\nyou can use!\n\nThanks for reading!"));
 		bm.setAuthor("Mob Fighter");
 		bm.setTitle("Mob Fighter Info");
@@ -297,15 +297,14 @@ public class ShopMenu {
 		pot4.setItemMeta(twenty);
 		shopInv.setItem(35, pot4);
 		
-		// Health Booster for $2,000
-		ItemStack health = new ItemStack(Material.RED_MUSHROOM);
-		ItemMeta healthMeta = health.getItemMeta();
-		ArrayList<String> healthLore = new ArrayList<String>();
-		healthLore.add(ChatColor.WHITE + "Price: $2,000.00");
-		healthMeta.setDisplayName("Health Boost");
-		healthMeta.setLore(healthLore);
-		health.setItemMeta(healthMeta);
-		shopInv.setItem(41, health);
+		// Lapis for $50
+		ItemStack lapis = new ItemStack(Material.LAPIS_BLOCK);
+		ItemMeta lapisMeta = lapis.getItemMeta();
+		ArrayList<String> lapisLore = new ArrayList<String>();
+		lapisLore.add(ChatColor.WHITE + "Price: $50.00 | " + ChatColor.ITALIC + "Used for enchanting!");
+		lapisMeta.setLore(lapisLore);
+		lapis.setItemMeta(lapisMeta);
+		shopInv.setItem(41, lapis);
 		
 		// 10 Gold Ingots for $100
 		ItemStack gold = new ItemStack(Material.GOLD_INGOT,10);
@@ -326,7 +325,7 @@ public class ShopMenu {
 		ItemStack brick = new ItemStack(Material.BRICK);
 		ItemMeta brickMeta = brick.getItemMeta();
 		ArrayList<String> brickLore = new ArrayList<String>();
-		brickLore.add(ChatColor.WHITE + "Price: $200.00\nAllows for bypass with anvil.");
+		brickLore.add(ChatColor.WHITE + "Price: $200.00 | " + ChatColor.ITALIC + "Allows for bypass with anvil.");
 		brickMeta.setDisplayName("Creative");
 		brickMeta.setLore(brickLore);
 		brick.setItemMeta(brickMeta);
@@ -336,21 +335,11 @@ public class ShopMenu {
 		ItemStack bench = new ItemStack(Material.WORKBENCH);
 		ItemMeta benchMeta = brick.getItemMeta();
 		ArrayList<String> benchLore = new ArrayList<String>();
-		benchLore.add(ChatColor.WHITE + "Price: $1000.00\nAllows player to craft 1 item.\n(Shift-Clicking the item is recommended!)");
-		benchMeta.setDisplayName("Crafting");
+		benchLore.add(ChatColor.WHITE + "Price: $1000.00 | " + ChatColor.ITALIC + "Allows player to craft 1 item.");
+		benchMeta.setDisplayName("Crafting (With item in hand, use /craft)");
 		benchMeta.setLore(benchLore);
-		brick.setItemMeta(benchMeta);
+		bench.setItemMeta(benchMeta);
 		shopInv.setItem(52, bench);
-		
-		// Stat Boost for $10,000 (this is permanent)
-		ItemStack button = new ItemStack(Material.STONE_BUTTON);
-		ItemMeta buttonMeta = button.getItemMeta();
-		ArrayList<String> buttonLore = new ArrayList<String>();
-		buttonLore.add(ChatColor.WHITE + "Price: $10,000.00");
-		buttonMeta.setDisplayName("Stat Boost");
-		buttonMeta.setLore(buttonLore);
-		button.setItemMeta(buttonMeta);
-		shopInv.setItem(53, button);
 	} 
 	
 	// Method to pass shop name to other classes.

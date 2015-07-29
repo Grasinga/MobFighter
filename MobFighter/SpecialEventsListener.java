@@ -324,7 +324,7 @@ public class SpecialEventsListener implements Listener{
 	}// End of Chunk Load event.
 	
 	// Handles special event deaths.
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onDeath(EntityDeathEvent event){
 		
 		World world = event.getEntity().getWorld();
