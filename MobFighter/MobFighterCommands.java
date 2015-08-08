@@ -79,7 +79,7 @@ public class MobFighterCommands implements CommandExecutor {
 				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives add Total_Kills totalKillCount");
 				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives add Health health");
 				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives add Money_Top dummy");
-				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives setDisplay list Player-Kills");
+				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives setDisplay list Money_Top");
 				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives setDisplay sidebar Total_Kills");
 				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives setDisplay belowName Health");
 				return true;

@@ -74,24 +74,27 @@ public class SpecialEventsListener implements Listener{
 					event.setCancelled(true);
 					int index = player.getInventory().getHeldItemSlot();
 					Block block = event.getClickedBlock();
-					for(ItemStack s : block.getDrops())
-						if(s.getDurability() == new ItemStack(Material.RED_ROSE).getDurability()){
+					for(ItemStack s : block.getDrops()){
+						if(s.getType().equals(Material.RED_ROSE) && 
+								s.getDurability() == new ItemStack(Material.RED_ROSE).getDurability()){
 							block.breakNaturally();
 							player.getInventory().clear(index);
+							
+							// Give sage book if the correct flower was popped.
+							ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+							BookMeta bm = (BookMeta) book.getItemMeta();
+							bm.setPages(Arrays.asList("The Lords and other Dwellers of the Overworld have recognized you. They will be willing to give you more power if you can gather enough Tainted Souls."));
+							bm.setAuthor("Mob Fighter");
+							bm.setTitle("Sage Path");
+							book.setItemMeta(bm);
+							player.getInventory().addItem(book);
+							player.updateInventory();
 						}
 						else // Not the right type of flower.
 							return;
-					// Give sage book if the correct flower was popped.
-					ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-					BookMeta bm = (BookMeta) book.getItemMeta();
-					bm.setPages(Arrays.asList("The Lords and other Dwellers of the Overworld have recognized you. They will be willing to give you more power if you can gather enough Tainted Souls."));
-					bm.setAuthor("Mob Fighter");
-					bm.setTitle("Sage Path");
-					book.setItemMeta(bm);
-					player.getInventory().addItem(book);
-					player.updateInventory();
+					}
 				}
-	}
+	}// End of playerClick()
 	
 	// Handles events that deal with picking up items. (Lightning, Explosive, and Field of Flowers)
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -101,11 +104,12 @@ public class SpecialEventsListener implements Listener{
 		
 		// Special Flower:
 		if(SpecialEvents.flowers){
-			if(event.getItem().getItemStack().getDurability() == new ItemStack(Material.RED_ROSE).getDurability())
+			if(event.getItem().getItemStack().getType().equals(Material.RED_ROSE) && 
+					event.getItem().getItemStack().getDurability() == new ItemStack(Material.RED_ROSE).getDurability())
 			{
 				ItemStack flower = event.getItem().getItemStack();
 				ItemMeta itemMeta = flower.getItemMeta();
-				itemMeta.setDisplayName("Power Flower");
+				itemMeta.setDisplayName(ChatColor.DARK_PURPLE + "Power Flower");
 				flower.setItemMeta(itemMeta);
 				flower.addUnsafeEnchantment(new EnchantmentWrapper(16), 5);
 				flower.addUnsafeEnchantment(new EnchantmentWrapper(21), 5);

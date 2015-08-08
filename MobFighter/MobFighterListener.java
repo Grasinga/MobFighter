@@ -97,7 +97,7 @@ public class MobFighterListener implements Listener {
 		{
 			p.setHealthScale(mobfighter.getConfig().getDouble("HealthScale." + p.getDisplayName()));
 		}
-		catch(Exception ex){log("Error: " + ex);}
+		catch(Exception ex){return;}
 	}
 	
 	// Gives a player who has joined for the first time the shop item.
@@ -910,7 +910,4 @@ public class MobFighterListener implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	
-	// Simple log method for short handing.
-	private void log(String s){System.out.println(s);}
 }
