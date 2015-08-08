@@ -7,7 +7,7 @@ commands:
   mfreload:
     description: Reloads MobFighter's configuration.
     permission: MobFighter.mfreload
-  setBoards:
+  setboards:
     description: Initializes scoreboards. Only needs to be used when the plugin is added to server.
     permission: MobFighter.setboards
   night:
@@ -18,6 +18,9 @@ commands:
   eventnight:
     description: Sets what nights the events start.
     permission: MobFighter.eventnight
+  setevent:
+    description: Sets what nights the events start.
+    permission: MobFighter.setevent
   ready:
     description: Toggle ready status. See who's ready with /ready list
   getshop:

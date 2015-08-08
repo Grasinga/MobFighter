@@ -101,12 +101,12 @@ public class MobFighterCommands implements CommandExecutor {
 				}				
 				if(Integer.parseInt(args[0]) >= 0 && Integer.parseInt(args[0]) <= 1000000){
 					
-						MobFighter.nights = Integer.parseInt(args[0]);
-						mobfighter.getConfig().set("Current Night", Integer.parseInt(args[0]));
-						mobfighter.saveConfig();
-						mobfighter.reloadConfig();
-						sender.sendMessage(ChatColor.BLUE + "Night set to: " + Integer.parseInt(args[0]));
-						return true;					
+					MobFighter.nights = Integer.parseInt(args[0]);
+					mobfighter.getConfig().set("Current Night", Integer.parseInt(args[0]));
+					mobfighter.saveConfig();
+					mobfighter.reloadConfig();
+					sender.sendMessage(ChatColor.BLUE + "Night set to: " + Integer.parseInt(args[0]));
+					return true;					
 				}
 				// Number was not between 0 and 1000000.
 				else
@@ -123,16 +123,80 @@ public class MobFighterCommands implements CommandExecutor {
 				}				
 				if(Integer.parseInt(args[0]) >= 1){
 					
-						mobfighter.getConfig().set("Event Night", Integer.parseInt(args[0]));
-						mobfighter.saveConfig();
-						mobfighter.reloadConfig();
-						sender.sendMessage(ChatColor.BLUE + "Event night set to: " + Integer.parseInt(args[0]));
-						return true;					
+					mobfighter.getConfig().set("Event Night", Integer.parseInt(args[0]));
+					mobfighter.saveConfig();
+					mobfighter.reloadConfig();
+					sender.sendMessage(ChatColor.BLUE + "Event night set to: " + Integer.parseInt(args[0]));
+					return true;					
 				}
 				// Number was not positive.
 				else
 					sender.sendMessage(ChatColor.RED + "Number has to be positive!");
 				return false;
+			}
+			
+			else if(commandLabel.equalsIgnoreCase("setevent")){
+				
+				// Start it at false
+				MobFighter.anyEvent = false;
+				
+				// Didn't enter an event.
+				if(args.length <= 0){
+					sender.sendMessage(ChatColor.GOLD + "/setevent <event>");
+					sender.sendMessage(ChatColor.GOLD + "Events: Random, Enderdragon, Wither, FoF, LightningStorm, ExplosiveDrops, "
+							+ "HotPotato, PvP, Giants, ZombieSwarm, WolfPack");
+					return true;
+				}
+				if(args[0].equalsIgnoreCase("Enderdragon")){
+					MobFighter.eventPicker = 10;
+					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+				}
+				else if(args[0].equalsIgnoreCase("Wither")){
+					MobFighter.eventPicker = 25;
+					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+				}
+				else if(args[0].equalsIgnoreCase("FoF")){
+					MobFighter.eventPicker = 35;
+					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+				}
+				else if(args[0].equalsIgnoreCase("LightningStorm")){
+					MobFighter.eventPicker = 45;
+					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+				}
+				else if(args[0].equalsIgnoreCase("ExplosiveDrops")){
+					MobFighter.eventPicker = 55;
+					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+				}
+				else if(args[0].equalsIgnoreCase("HotPotato")){
+					MobFighter.eventPicker = 62;
+					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+				}
+				else if(args[0].equalsIgnoreCase("PvP")){
+					MobFighter.eventPicker = 70;
+					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+				}
+				else if(args[0].equalsIgnoreCase("Giants")){
+					MobFighter.eventPicker = 88;
+					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+				}
+				else if(args[0].equalsIgnoreCase("ZombieSwarm")){
+					MobFighter.eventPicker = 92;
+					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+				}
+				else if(args[0].equalsIgnoreCase("WolfPack")){
+					MobFighter.eventPicker = 98;
+					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+				}
+				else if(args[0].equalsIgnoreCase("Random")){
+					MobFighter.anyEvent = true;
+				}
+				else{
+					sender.sendMessage(ChatColor.GOLD + "/setevent <event>");
+					sender.sendMessage(ChatColor.GOLD + "Events: Random, Enderdragon, Wither, FoF, LightningStorm, ExplosiveDrops, "
+						+ "HotPotato, PvP, Giants, ZombieSwarm, WolfPack");
+					return true;
+				}
+				return true;
 			}
 		
 		// Commands for players.
@@ -454,6 +518,7 @@ public class MobFighterCommands implements CommandExecutor {
 						player.getInventory().addItem(workbench);
 						player.getInventory().addItem(brick);
 					}
+					
 					// Command was missing the substance that's needed.
 					else
 						player.sendMessage(ChatColor.GRAY + "You seem to be lacking substance.");

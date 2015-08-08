@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.EnchantmentWrapper;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
@@ -26,6 +28,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -201,126 +204,41 @@ public class SpecialEventsListener implements Listener{
 			if(event.getEntity() instanceof Giant)
 			{
 				Giant g = (Giant)event.getEntity();
-				((LivingEntity)g).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE,3));
-				((LivingEntity)g).addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE,3));
+				((LivingEntity)g).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE,1));
 			}
 		}
 	}
 	
-	// Used to load/unload the flowers on the world.
-	@SuppressWarnings("deprecation")
+	// Makes the Giants teleport when damaged.
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void chunkLoad(ChunkLoadEvent event){
+	public void onDamage(EntityDamageByEntityEvent event){
 		
-		World world = event.getWorld();
-		
-		// Flowers only spawn in once.
-		
-			if(SpecialEvents.flowers){
-				if(initialFlowers){
-					Bukkit.broadcastMessage(ChatColor.GREEN + "A field of flowers appears!");
-					
-					// Sets the positions to spawn in flowers.
-					Location a = new Location(world,(world.getSpawnLocation().getBlockX()-150),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-150));
-					Location b = new Location(world,(world.getSpawnLocation().getBlockX()+150),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+150));
-					int xMin = Math.min(a.getBlockX(),b.getBlockX());
-					int yMin = Math.min(a.getBlockY(),b.getBlockY());
-					int zMin = Math.min(a.getBlockZ(),b.getBlockZ());
-					int xMax = Math.max(a.getBlockX(),b.getBlockX());
-					int yMax = Math.max(a.getBlockY(),b.getBlockY());
-					int zMax = Math.max(a.getBlockZ(),b.getBlockZ());
-					
-					// Gets the spot to set the special flower.
-					int r = (int)(Math.random()*90000+1);
-					int sFlower = 0;
-					
-					for (int x = xMin; x<=xMax; x++)
-					{
-						for (int y = yMin; y<=yMax; y++)
-						{
-							for (int z = zMin; z<=zMax; z++)
-						    {
-								// Places a flower within the positions given. (Only if that block is air.)
-								Location blockLoc = new Location(world,(world.getBlockAt(x,y,z).getX()), (world.getBlockAt(x,y,z).getY()), (world.getBlockAt(x,y,z).getZ()));
-								if(blockLoc.getBlock().getType().equals(Material.AIR))
-									blockLoc.getBlock().setTypeIdAndData(38, (byte) 0x4, false);
-								sFlower++;
-								
-								// Checks to see if the spot the flower was just placed in needs to be replaced with a rose.
-								if(sFlower==r)
-								{
-									if(blockLoc.getBlock().getType().equals(Material.RED_ROSE))
-										blockLoc.getBlock().setTypeIdAndData(38, (byte) 0x0, false);
-								}
-						    }
-						}
-					}
-					
-					// Sets the positions to remove flowers near spawn.
-					Location c = new Location(world,(world.getSpawnLocation().getBlockX()-100),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-100));
-					Location d = new Location(world,(world.getSpawnLocation().getBlockX()+100),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+100));
-					int xMin2 = Math.min(c.getBlockX(),d.getBlockX());
-					int yMin2 = Math.min(c.getBlockY(),d.getBlockY());
-					int zMin2 = Math.min(c.getBlockZ(),d.getBlockZ());
-					int xMax2 = Math.max(c.getBlockX(),d.getBlockX());
-					int yMax2 = Math.max(c.getBlockY(),d.getBlockY());
-					int zMax2 = Math.max(c.getBlockZ(),d.getBlockZ());
-					for (int x = xMin2; x<=xMax2; x++)
-					{
-						for (int y = yMin2; y<=yMax2; y++)
-						{
-							for (int z = zMin2; z<=zMax2; z++)
-						    {
-								// Removes flowers around spawn using the above positions.
-								Location blockLoc = new Location(world,(world.getBlockAt(x,y,z).getX()), (world.getBlockAt(x,y,z).getY()), (world.getBlockAt(x,y,z).getZ()));
-								if(blockLoc.getBlock().getType().equals(Material.RED_ROSE))
-									blockLoc.getBlock().setType(Material.AIR);
-						    }
-						}
-					}
-					
-					// Gets rid of any flowers that dropped when they were being spawned in. (So there isn't lag from the drops.)
-					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"stoplag");
-					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"stoplag -c");
-					
-					initialFlowers = false;
-					
-				}// End of initialFlowers.
+		if(SpecialEvents.giants){			
+			if(event.getEntity() instanceof Giant){
 				
-				// Ends event.
-				if(!MobFighter.isNight)
-				{
-					Location a = new Location(world,(world.getSpawnLocation().getBlockX()-150),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-150));
-					Location b = new Location(world,(world.getSpawnLocation().getBlockX()+150),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+150));
-					int xMin = Math.min(a.getBlockX(),b.getBlockX());
-					int yMin = Math.min(a.getBlockY(),b.getBlockY());
-					int zMin = Math.min(a.getBlockZ(),b.getBlockZ());
-					int xMax = Math.max(a.getBlockX(),b.getBlockX());
-					int yMax = Math.max(a.getBlockY(),b.getBlockY());
-					int zMax = Math.max(a.getBlockZ(),b.getBlockZ());
-					for (int x = xMin; x<=xMax; x++)
-					{
-						for (int y = yMin; y<=yMax; y++)
-						{
-							for (int z = zMin; z<=zMax; z++)
-						    {
-								Location blockLoc = new Location(world,(world.getBlockAt(x,y,z).getX()), (world.getBlockAt(x,y,z).getY()), (world.getBlockAt(x,y,z).getZ()));
-								if(blockLoc.getBlock().getType().equals(Material.RED_ROSE))
-									blockLoc.getBlock().setType(Material.AIR);
-						    }
-						}
-					}
-					Bukkit.broadcastMessage(ChatColor.GREEN + "The flowers seem to have disappeared!");
-					
-					initialFlowers = true;
-					
-					SpecialEvents.flowers = false;
-					
-				}// End of night.
+				// Do damage to attacker.
+				if(event.getDamager() instanceof Arrow)
+					((LivingEntity)((Arrow) event.getDamager()).getShooter()).damage(2);
+				else
+					((LivingEntity) event.getDamager()).damage(2);
 				
-			}// End of flowers.			
-			
-	}// End of Chunk Load event.
+				// Teleport a little ways away.
+				World world = event.getEntity().getWorld();				
+				int x = (event.getEntity().getLocation().getBlockX() + ((int)(Math.random()*10)));
+				int y = event.getEntity().getLocation().getBlockY();
+				int z = (event.getEntity().getLocation().getBlockZ() + ((int)(Math.random()*10)));
+				Location tp = new Location(world, x, y, z);
+				
+				// Make it look like the Giant launch towards its teleport.
+				doEffect(event.getEntity().getWorld(), event.getEntity().getLocation(), Effect.EXPLOSION_LARGE);
+				event.getEntity().teleport(tp);
+			}
+			else
+				return;
+		}
+		
+	}
+	
 	
 	// Handles special event deaths.
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -365,10 +283,10 @@ public class SpecialEventsListener implements Listener{
 			event.getDrops().add(item);
 			event.setDroppedExp(10000);
 			SpecialEvents.giantsKilled++;
-			Bukkit.broadcastMessage(ChatColor.YELLOW + "Total Giants defeated: " + SpecialEvents.giantsKilled);
 			
-			Bukkit.broadcastMessage(ChatColor.YELLOW + "Giants left this night: " + (SpecialEvents.giantsKilled % 4));
+			Bukkit.broadcastMessage(ChatColor.RED + "Giants left this night: " + (4 - SpecialEvents.giantsKilled));
 			if(SpecialEvents.giantsKilled % 4 == 0){
+				Bukkit.broadcastMessage(ChatColor.GREEN + "Total Giants defeated: " + SpecialEvents.giantsKilled);
 				Bukkit.broadcastMessage(ChatColor.GOLD + "Now that all of the Giants have been defeated, it will become day in 10 seconds!");
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable() 
 				{
@@ -431,4 +349,125 @@ public class SpecialEventsListener implements Listener{
 			}
 		}		
 	}
+	
+	// Used to load/unload the flowers on the world.
+		@SuppressWarnings("deprecation")
+		@EventHandler(priority = EventPriority.HIGHEST)
+		public void chunkLoad(ChunkLoadEvent event){
+			
+			World world = event.getWorld();
+			
+			// Flowers only spawn in once.
+			
+				if(SpecialEvents.flowers){
+					if(initialFlowers){
+						Bukkit.broadcastMessage(ChatColor.GREEN + "A field of flowers appears!");
+						
+						// Sets the positions to spawn in flowers.
+						Location a = new Location(world,(world.getSpawnLocation().getBlockX()-150),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-150));
+						Location b = new Location(world,(world.getSpawnLocation().getBlockX()+150),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+150));
+						int xMin = Math.min(a.getBlockX(),b.getBlockX());
+						int yMin = Math.min(a.getBlockY(),b.getBlockY());
+						int zMin = Math.min(a.getBlockZ(),b.getBlockZ());
+						int xMax = Math.max(a.getBlockX(),b.getBlockX());
+						int yMax = Math.max(a.getBlockY(),b.getBlockY());
+						int zMax = Math.max(a.getBlockZ(),b.getBlockZ());
+						
+						// Gets the spot to set the special flower.
+						int r = (int)(Math.random()*90000+1);
+						int sFlower = 0;
+						
+						for (int x = xMin; x<=xMax; x++)
+						{
+							for (int y = yMin; y<=yMax; y++)
+							{
+								for (int z = zMin; z<=zMax; z++)
+							    {
+									// Places a flower within the positions given. (Only if that block is air.)
+									Location blockLoc = new Location(world,(world.getBlockAt(x,y,z).getX()), (world.getBlockAt(x,y,z).getY()), (world.getBlockAt(x,y,z).getZ()));
+									if(blockLoc.getBlock().getType().equals(Material.AIR))
+										blockLoc.getBlock().setTypeIdAndData(38, (byte) 0x4, false);
+									sFlower++;
+									
+									// Checks to see if the spot the flower was just placed in needs to be replaced with a rose.
+									if(sFlower==r)
+									{
+										if(blockLoc.getBlock().getType().equals(Material.RED_ROSE))
+											blockLoc.getBlock().setTypeIdAndData(38, (byte) 0x0, false);
+									}
+							    }
+							}
+						}
+						
+						// Sets the positions to remove flowers near spawn.
+						Location c = new Location(world,(world.getSpawnLocation().getBlockX()-100),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-100));
+						Location d = new Location(world,(world.getSpawnLocation().getBlockX()+100),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+100));
+						int xMin2 = Math.min(c.getBlockX(),d.getBlockX());
+						int yMin2 = Math.min(c.getBlockY(),d.getBlockY());
+						int zMin2 = Math.min(c.getBlockZ(),d.getBlockZ());
+						int xMax2 = Math.max(c.getBlockX(),d.getBlockX());
+						int yMax2 = Math.max(c.getBlockY(),d.getBlockY());
+						int zMax2 = Math.max(c.getBlockZ(),d.getBlockZ());
+						for (int x = xMin2; x<=xMax2; x++)
+						{
+							for (int y = yMin2; y<=yMax2; y++)
+							{
+								for (int z = zMin2; z<=zMax2; z++)
+							    {
+									// Removes flowers around spawn using the above positions.
+									Location blockLoc = new Location(world,(world.getBlockAt(x,y,z).getX()), (world.getBlockAt(x,y,z).getY()), (world.getBlockAt(x,y,z).getZ()));
+									if(blockLoc.getBlock().getType().equals(Material.RED_ROSE))
+										blockLoc.getBlock().setType(Material.AIR);
+							    }
+							}
+						}
+						
+						// Gets rid of any flowers that dropped when they were being spawned in. (So there isn't lag from the drops.)
+						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"stoplag");
+						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"stoplag -c");
+						
+						initialFlowers = false;
+						
+					}// End of initialFlowers.
+					
+					// Ends event.
+					if(!MobFighter.isNight)
+					{
+						Location a = new Location(world,(world.getSpawnLocation().getBlockX()-150),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-150));
+						Location b = new Location(world,(world.getSpawnLocation().getBlockX()+150),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+150));
+						int xMin = Math.min(a.getBlockX(),b.getBlockX());
+						int yMin = Math.min(a.getBlockY(),b.getBlockY());
+						int zMin = Math.min(a.getBlockZ(),b.getBlockZ());
+						int xMax = Math.max(a.getBlockX(),b.getBlockX());
+						int yMax = Math.max(a.getBlockY(),b.getBlockY());
+						int zMax = Math.max(a.getBlockZ(),b.getBlockZ());
+						for (int x = xMin; x<=xMax; x++)
+						{
+							for (int y = yMin; y<=yMax; y++)
+							{
+								for (int z = zMin; z<=zMax; z++)
+							    {
+									Location blockLoc = new Location(world,(world.getBlockAt(x,y,z).getX()), (world.getBlockAt(x,y,z).getY()), (world.getBlockAt(x,y,z).getZ()));
+									if(blockLoc.getBlock().getType().equals(Material.RED_ROSE))
+										blockLoc.getBlock().setType(Material.AIR);
+							    }
+							}
+						}
+						Bukkit.broadcastMessage(ChatColor.GREEN + "The flowers seem to have disappeared!");
+						
+						initialFlowers = true;
+						
+						SpecialEvents.flowers = false;
+						
+					}// End of night.
+					
+				}// End of flowers.			
+				
+		}// End of Chunk Load event.
+		
+		// Used for playing effects.
+		private void doEffect(World w, Location l, Effect e){
+			l.setY(l.getY() + 2);
+			w.playEffect(l, e, 1000);
+		}
 }

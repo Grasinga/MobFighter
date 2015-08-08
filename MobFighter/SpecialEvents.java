@@ -82,7 +82,7 @@ public class SpecialEvents{
 	
 	// Wither event:
 	private void eventWither(){
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w " + world.getName() + " deny-spawn Creeper, Witch, Skeleton, Spider, Zombie, Slime, Enderman");
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w " + world.getName() + " deny-spawn Creeper, Witch, Skeleton, Spider, Zombie, Slime, Enderman, Pig, Chicken, Sheep, Cow, Horse, Rabbit");
 		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"butcher");
 		Location spawnLoc = new Location(world,(world.getSpawnLocation().getX() - 20),(world.getSpawnLocation().getY() + 10),world.getSpawnLocation().getZ());
 		Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + (ChatColor.BOLD + "The Wither has Appeared!"));
@@ -128,7 +128,7 @@ public class SpecialEvents{
 		Bukkit.broadcastMessage(ChatColor.DARK_RED + "The four Giants have risen!");
 		int x = 15;
 		int z = 15;
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w " + world.getName() + " deny-spawn Creeper, Witch, Skeleton, Spider, Slime, Enderman");
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w " + world.getName() + " deny-spawn Creeper, Witch, Skeleton, Spider, Slime, Enderman, Pig, Chicken, Sheep, Cow, Horse, Rabbit");
 		// First
 		Location loc1 = new Location(world,(world.getSpawnLocation().getX()-x),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-z));
 		world.spawnEntity(loc1, EntityType.GIANT);
@@ -149,7 +149,7 @@ public class SpecialEvents{
 		babyZombies = true;
 		
 		Bukkit.broadcastMessage(ChatColor.DARK_RED + "The Undead Horde has come!");
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w " + world.getName() + " deny-spawn Creeper, Witch, Skeleton, Spider, Slime, Enderman, Giant");
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w " + world.getName() + " deny-spawn Creeper, Witch, Skeleton, Spider, Slime, Enderman, Giant, Pig, Chicken, Sheep, Cow, Horse, Rabbit");
 		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"butcher");
 		Location a = new Location(world,(world.getSpawnLocation().getBlockX()-20),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-20));
 		Location b = new Location(world,(world.getSpawnLocation().getBlockX()+20),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-15));
@@ -175,7 +175,7 @@ public class SpecialEvents{
 		wolves = true;
 		
 		Bukkit.broadcastMessage(ChatColor.WHITE + "The Corrupted Wolves have come!");
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w " + world.getName() + " deny-spawn Creeper, Witch, Skeleton, Zombie, Spider, Slime, Enderman, Giant");
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w " + world.getName() + " deny-spawn Creeper, Witch, Skeleton, Zombie, Spider, Slime, Enderman, Giant, Pig, Chicken, Sheep, Cow, Horse, Rabbit");
 		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"butcher");
 		Location a = new Location(world,(world.getSpawnLocation().getBlockX()-20),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-20));
 		Location b = new Location(world,(world.getSpawnLocation().getBlockX()+20),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-10));

@@ -58,21 +58,21 @@ public class EliteShop {
 		flower.addUnsafeEnchantment(new EnchantmentWrapper(19), 1);
 		eliteShop.setItem(5, flower);
 		
-		// 5x Swirling Souls for $1,000,000
-		ItemStack star = new ItemStack(Material.NETHER_STAR,5);
+		// Swirling Souls for $200,000
+		ItemStack star = new ItemStack(Material.NETHER_STAR);
 		ItemMeta starMeta = star.getItemMeta();
 		ArrayList<String> starLore = new ArrayList<String>();
-		starLore.add(ChatColor.WHITE + "Price: $1,000,000");
+		starLore.add(ChatColor.WHITE + "Price: $200,000");
 		starMeta.setDisplayName(ChatColor.GREEN + "Swirling Souls");
 		starMeta.setLore(starLore);
 		star.setItemMeta(starMeta);
 		eliteShop.setItem(7, star);
 		
-		// 5x Festering Darkness for $1,000,000
-		ItemStack fCharge = new ItemStack(Material.FIREWORK_CHARGE,5);
+		// Festering Darkness for $200,000
+		ItemStack fCharge = new ItemStack(Material.FIREWORK_CHARGE);
 		ItemMeta fChargeMeta = fCharge.getItemMeta();
 		ArrayList<String> fChargeLore = new ArrayList<String>();
-		fChargeLore.add(ChatColor.WHITE + "Price: $1,000,000");
+		fChargeLore.add(ChatColor.WHITE + "Price: $200,000");
 		fChargeMeta.setDisplayName(ChatColor.DARK_PURPLE + "Festering Darkness");
 		fChargeMeta.setLore(fChargeLore);
 		fCharge.setItemMeta(fChargeMeta);

@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -108,7 +109,7 @@ public class MobFighterListener implements Listener {
 		if(p.hasPlayedBefore()){ return; }
 		
 		// Give starter kit and shop to player who joins for the first time.
-		ItemStack woodenSword = new ItemStack(Material.WOOD_SWORD);
+		ItemStack stoneSword = new ItemStack(Material.STONE_SWORD);
 		ItemStack leatherHat = new ItemStack(Material.LEATHER_HELMET);
 		ItemStack leatherChest = new ItemStack(Material.LEATHER_CHESTPLATE);
 		ItemStack leatherLegs = new ItemStack(Material.LEATHER_LEGGINGS);
@@ -120,7 +121,7 @@ public class MobFighterListener implements Listener {
 		p.getInventory().setChestplate(leatherChest);
 		p.getInventory().setLeggings(leatherLegs);
 		p.getInventory().setBoots(leatherBoots);
-		p.getInventory().addItem(woodenSword);
+		p.getInventory().addItem(stoneSword);
 		p.getInventory().addItem(bow);
 		p.getInventory().addItem(arrow);
 		p.getInventory().addItem(beef);
@@ -166,6 +167,7 @@ public class MobFighterListener implements Listener {
 			}
 		}
 		
+		// Creative mode switch
 		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
 		{
 			if(player.getItemInHand().getType().equals(Material.BRICK))
@@ -183,6 +185,17 @@ public class MobFighterListener implements Listener {
 			}
 		}
 		
+		// Pet Wolf spawn
+		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
+		{
+			if(player.getItemInHand().getType().equals(Material.MONSTER_EGG)){
+				if(player.getItemInHand().getDurability() == EntityType.WOLF.getTypeId())
+					player.getWorld().spawnEntity(player.getLocation(), EntityType.WOLF);
+				player.setItemInHand(new ItemStack(Material.AIR));
+			}
+		}
+		
+		// Health Boost, Stat Boost, and Crafting 
 		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
 			if(player.getItemInHand().getType().equals(Material.RED_MUSHROOM))
 			{
@@ -212,6 +225,7 @@ public class MobFighterListener implements Listener {
 				player.sendMessage(ChatColor.GRAY + "Type: /craft");
 			}
 		
+		// Get special items for end-game armor set.
 		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
 		{
 			if(player.getItemInHand().getType().equals(Material.SPONGE))
@@ -249,6 +263,7 @@ public class MobFighterListener implements Listener {
 			}
 		}
 		
+		// Allows people with creative immunity to place blocks.
 		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
 		{
 			if(player.getGameMode().equals(GameMode.CREATIVE))
@@ -267,8 +282,9 @@ public class MobFighterListener implements Listener {
 		
 	}
 	
+	// Handles buying items.
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onInventoryClick(InventoryClickEvent event)
+	public void onBuyClick(InventoryClickEvent event)
 	{
 		Player player = (Player) event.getWhoClicked();
 		if(player != null)
@@ -280,15 +296,15 @@ public class MobFighterListener implements Listener {
 				// Items can't be taken from the shop.
 				event.setCancelled(true);
 				
-				if(clicked.getType() == Material.WOOD_SWORD)
+				if(clicked.getType() == Material.STONE_SWORD)
 				{
-					if(VaultEco.getEconomy().getBalance(player) < 5)
+					if(VaultEco.getEconomy().getBalance(player) < 10)
 					{
 						player.sendMessage(ChatColor.RED + "You do not have enough money!");
 						return;
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 5);
-					player.getInventory().addItem(new ItemStack(Material.WOOD_SWORD));
+					VaultEco.getEconomy().withdrawPlayer(player, 10);
+					player.getInventory().addItem(new ItemStack(Material.STONE_SWORD));
 				}
 				else if(clicked.getType() == Material.LEATHER_HELMET)
 				{
@@ -342,12 +358,12 @@ public class MobFighterListener implements Listener {
 				}
 				else if(clicked.getType() == Material.GOLD_SWORD)
 				{
-					if(VaultEco.getEconomy().getBalance(player) < 10)
+					if(VaultEco.getEconomy().getBalance(player) < 5)
 					{
 						player.sendMessage(ChatColor.RED + "You do not have enough money!");
 						return;
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 10);
+					VaultEco.getEconomy().withdrawPlayer(player, 5);
 					player.getInventory().addItem(new ItemStack(Material.GOLD_SWORD));
 				}
 				else if(clicked.getType() == Material.GOLD_HELMET)
@@ -662,13 +678,13 @@ public class MobFighterListener implements Listener {
 				}
 				else if(clicked.getType() == Material.NETHER_STAR)
 				{
-					if(VaultEco.getEconomy().getBalance(player) < 1000000)
+					if(VaultEco.getEconomy().getBalance(player) < 200000)
 					{
 						player.sendMessage(ChatColor.RED + "You do not have enough money!");
 						return;
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 1000000);
-					ItemStack star = new ItemStack(Material.NETHER_STAR,5);
+					VaultEco.getEconomy().withdrawPlayer(player, 200000);
+					ItemStack star = new ItemStack(Material.NETHER_STAR);
 					ItemMeta meta = star.getItemMeta();
 					meta.setDisplayName(ChatColor.GREEN + "Swirling Souls");
 					star.setItemMeta(meta);
@@ -676,13 +692,13 @@ public class MobFighterListener implements Listener {
 				}
 				else if(clicked.getType() == Material.FIREWORK_CHARGE)
 				{
-					if(VaultEco.getEconomy().getBalance(player) < 1000000)
+					if(VaultEco.getEconomy().getBalance(player) < 200000)
 					{
 						player.sendMessage(ChatColor.RED + "You do not have enough money!");
 						return;
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 1000000);
-					ItemStack fCharge = new ItemStack(Material.FIREWORK_CHARGE,5);
+					VaultEco.getEconomy().withdrawPlayer(player, 200000);
+					ItemStack fCharge = new ItemStack(Material.FIREWORK_CHARGE);
 					ItemMeta meta = fCharge.getItemMeta();
 					meta.setDisplayName(ChatColor.DARK_PURPLE + "Festering Darkness");
 					fCharge.setItemMeta(meta);

@@ -19,101 +19,101 @@ public class ShopMenu {
 	static
 	{
 		// Item just used for getting meta data to preset prices.
-		ItemStack woodSword = new ItemStack(Material.WOOD_SWORD);
+		ItemStack stoneSword = new ItemStack(Material.STONE_SWORD);
 		
 		// $5 preset
-		ItemMeta five = woodSword.getItemMeta();
+		ItemMeta five = stoneSword.getItemMeta();
 		ArrayList<String> fiveLore = new ArrayList<String>();
 		fiveLore.add(ChatColor.WHITE + "Price: $5.00");
 		five.setLore(fiveLore);
 		
 		// $10 preset 
-		ItemMeta ten = woodSword.getItemMeta();
+		ItemMeta ten = stoneSword.getItemMeta();
 		ArrayList<String> tenLore = new ArrayList<String>();
 		tenLore.add(ChatColor.WHITE + "Price: $10.00");
 		ten.setLore(tenLore);
 		
 		// $15 preset
-		ItemMeta fifteen = woodSword.getItemMeta();
+		ItemMeta fifteen = stoneSword.getItemMeta();
 		ArrayList<String> fifteenLore = new ArrayList<String>();
 		fifteenLore.add(ChatColor.WHITE + "Price: $15.00");
 		fifteen.setLore(fifteenLore);
 		
 		// $20 preset
-		ItemMeta twenty = woodSword.getItemMeta();
+		ItemMeta twenty = stoneSword.getItemMeta();
 		ArrayList<String> twentyLore = new ArrayList<String>();
 		twentyLore.add(ChatColor.WHITE + "Price: $20.00");
 		twenty.setLore(twentyLore);
 	    
 		// $50 preset
-		ItemMeta fifty = woodSword.getItemMeta();
+		ItemMeta fifty = stoneSword.getItemMeta();
 		ArrayList<String> fiftyLore = new ArrayList<String>();
 		fiftyLore.add(ChatColor.WHITE + "Price: $50.00");
 		fifty.setLore(fiftyLore);
 		
 		// $100 preset
-		ItemMeta hundred = woodSword.getItemMeta();
+		ItemMeta hundred = stoneSword.getItemMeta();
 		ArrayList<String> hundredLore = new ArrayList<String>();
 		hundredLore.add(ChatColor.WHITE + "Price: $100.00");
 		hundred.setLore(hundredLore);
 		
 		// $150 preset
-		ItemMeta hundredFifty = woodSword.getItemMeta();
+		ItemMeta hundredFifty = stoneSword.getItemMeta();
 		ArrayList<String> hundredFiftyLore = new ArrayList<String>();
 		hundredFiftyLore.add(ChatColor.WHITE + "Price: $150.00");
 		hundredFifty.setLore(hundredFiftyLore);
 		
 		// $200 preset
-		ItemMeta twoHundred = woodSword.getItemMeta();
+		ItemMeta twoHundred = stoneSword.getItemMeta();
 		ArrayList<String> twoHundredLore = new ArrayList<String>();
 		twoHundredLore.add(ChatColor.WHITE + "Price: $200.00");
 		twoHundred.setLore(twoHundredLore);
 		
 		// $300 preset
-		ItemMeta threeHundred = woodSword.getItemMeta();
+		ItemMeta threeHundred = stoneSword.getItemMeta();
 		ArrayList<String> threeHundredLore = new ArrayList<String>();
 		threeHundredLore.add(ChatColor.WHITE + "Price: $300.00");
 		threeHundred.setLore(threeHundredLore);
 		
 		// $400 preset
-		ItemMeta fourHundred = woodSword.getItemMeta();
+		ItemMeta fourHundred = stoneSword.getItemMeta();
 		ArrayList<String> fourHundredLore = new ArrayList<String>();
 		fourHundredLore.add(ChatColor.WHITE + "Price: $400.00");
 		fourHundred.setLore(fourHundredLore);
 		
 		// $800 preset
-		ItemMeta eightHundred = woodSword.getItemMeta();
+		ItemMeta eightHundred = stoneSword.getItemMeta();
 		ArrayList<String> eightHundredLore = new ArrayList<String>();
 		eightHundredLore.add(ChatColor.WHITE + "Price: $800.00");
 		eightHundred.setLore(eightHundredLore);
 		
 		// $1,000 preset
-		ItemMeta oneThousand = woodSword.getItemMeta();
+		ItemMeta oneThousand = stoneSword.getItemMeta();
 		ArrayList<String> oneThousandLore = new ArrayList<String>();
 		oneThousandLore.add(ChatColor.WHITE + "Price: $1,000.00");
 		oneThousand.setLore(oneThousandLore);
 		
 		// $2,000 preset
-		ItemMeta twoThousand = woodSword.getItemMeta();
+		ItemMeta twoThousand = stoneSword.getItemMeta();
 		ArrayList<String> twoThousandLore = new ArrayList<String>();
 		twoThousandLore.add(ChatColor.WHITE + "Price: $2,000.00");
 		twoThousand.setLore(twoThousandLore);
 		
 		// $2,600 preset
-		ItemMeta twentySixHundred = woodSword.getItemMeta();
+		ItemMeta twentySixHundred = stoneSword.getItemMeta();
 		ArrayList<String> twentySixHundredLore = new ArrayList<String>();
 		twentySixHundredLore.add(ChatColor.WHITE + "Price: $2,600.00");
 		twentySixHundred.setLore(twentySixHundredLore);
 		
 		// $10,000 preset
-		ItemMeta tenThousand = woodSword.getItemMeta();
+		ItemMeta tenThousand = stoneSword.getItemMeta();
 		ArrayList<String> tenThousandLore = new ArrayList<String>();
 		tenThousandLore.add(ChatColor.WHITE + "Price: $10,000.00");
 		tenThousand.setLore(tenThousandLore);
 		
 		// Wooden sword for $5
-		woodSword.setItemMeta(five);
-		shopInv.setItem(0, woodSword);
+		stoneSword.setItemMeta(ten);
+		shopInv.setItem(0, stoneSword);
 		
 		// Leather Helmet for $5
 		ItemStack leatherHat = new ItemStack(Material.LEATHER_HELMET);
@@ -142,7 +142,7 @@ public class ShopMenu {
 		
 		// Gold Sword for $10
 		ItemStack goldSword = new ItemStack(Material.GOLD_SWORD);
-		goldSword.setItemMeta(ten);
+		goldSword.setItemMeta(five);
 		shopInv.setItem(1, goldSword);
 		
 		// Gold Helmet for $10

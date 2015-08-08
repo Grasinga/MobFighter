@@ -8,6 +8,7 @@
 # MobDropPrice is the amount you want the corresponding item in MobDrops spot to cost.
 # First spot in MobDrops is WRITTEN_BOOK. The First spot in MobDropPrice is 0, so WRITTEN_BOOK sells for $0.
 # WRITTEN_BOOK is in there to sell back the books a player has read. (Frees up inventory space.)
+Just Added: true
 World Name: world
 Current Night: 0
 Event Night: 5

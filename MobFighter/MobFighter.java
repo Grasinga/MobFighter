@@ -28,10 +28,10 @@ public class MobFighter extends JavaPlugin {
     private World world;
 	
 	// Every number or nights which an event can occur. (If it's 5 then an event happens every 5 nights.)
-	private int eventNight = getConfig().getInt("EventNight");
+	private int eventNight = getConfig().getInt("Event Night");
 	
 	// Variable to keep track on how many nights have passed. (Includes the current night if it's night time.)
-	private int night = getConfig().getInt("CurrentNight");
+	private int night = getConfig().getInt("Current Night");
 	
 	// Variable to use night in other classes.
 	public static int nights = 0;
@@ -53,6 +53,12 @@ public class MobFighter extends JavaPlugin {
 	
 	// Variable to get players who have readied.
 	public static PlayerNames playerNames = new PlayerNames();
+	
+	// Variable to pick the event.
+	public static int eventPicker = 0;
+	
+	// Variable to keep track or fixed or random events. (true = random event) (false = specified event)
+	public static boolean anyEvent = true;
 	
 	// When plugin is starts:
 	public void onEnable() {
@@ -82,6 +88,7 @@ public class MobFighter extends JavaPlugin {
 		getCommand("night").setExecutor(new MobFighterCommands(this));
 		getCommand("setnight").setExecutor(new MobFighterCommands(this));
 		getCommand("eventnight").setExecutor(new MobFighterCommands(this));
+		getCommand("setevent").setExecutor(new MobFighterCommands(this));
 		getCommand("ready").setExecutor(new MobFighterCommands(this));
 		getCommand("getshop").setExecutor(new MobFighterCommands(this));
 		getCommand("getbook").setExecutor(new MobFighterCommands(this));
@@ -94,8 +101,9 @@ public class MobFighter extends JavaPlugin {
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 		
-		// Players can't lose their items when they die.
-		server.dispatchCommand(Bukkit.getConsoleSender(),"gamerule keepInventory true");
+		// Set Scoreboard, gamerule, and flags if this plugin was just added to the server.
+		if(getConfig().getBoolean("Just Added"))
+			runStartVariables();
 		
 		// Runs the Repeating Task that determines whether is it day or night. (Checks every Minecraft tick.)
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
@@ -115,7 +123,7 @@ public class MobFighter extends JavaPlugin {
 					
 					// When the day first starts: change money to tab view, set players money on tab view, teleport players to spawn, and butcher all mobs.
 					if(startDay)
-            		{
+            		{						
 						// Gets the top player for Elite Shop
 						getConfig().set("Top Player", topPlayer());
 						saveConfig();
@@ -124,8 +132,8 @@ public class MobFighter extends JavaPlugin {
 						// Clears ready list.
 						playerNames.removeAll();
 						
-						// Prevents Slimes from spawning and resets global flags.
-						server.dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w "+ worldName + " deny-spawn Slime, Pig, Sheep, Cow, Horse, Rabbit");
+						// Prevents Slimes and animals from spawning and resets global flags.
+						server.dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w "+ worldName + " deny-spawn Slime, Pig, Chicken, Sheep, Cow, Horse, Rabbit");
 						
         				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives setDisplay list Money_Top");
             			Collection<? extends Player> list = Bukkit.getOnlinePlayers();
@@ -210,11 +218,14 @@ public class MobFighter extends JavaPlugin {
 	    					if(a.getGameMode().equals(GameMode.CREATIVE))
 	    						for(int i=0;i<getConfig().getList("Creative Immunity").size();i++)
 	    							if(!(a.getDisplayName().equalsIgnoreCase(getConfig().getList("Creative Immunity").get(i).toString())))
-	    								a.setGameMode(GameMode.ADVENTURE);
+	    								a.setGameMode(GameMode.SURVIVAL);
 	    				}
 	    				
 	    				// Stuff to run when the night begins:
 	    				if(startNight){
+	    					
+	    					// Prevents Slimes and animals from spawning and resets global flags.
+							server.dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w "+ worldName + " deny-spawn Slime, Pig, Chicken, Sheep, Cow, Horse, Rabbit");
 	    					
 							// Clears ready list.
 							playerNames.removeAll();
@@ -247,37 +258,38 @@ public class MobFighter extends JavaPlugin {
 	        				if(night%eventNight == 0){
 	        					
 	        					// The "random" event picker.
-	        					int r = (int)(Math.random()*100+1);
+	        					if(anyEvent)
+	        						eventPicker = (int)(Math.random()*100+1);
 	        					
 	        					// Enderdragon with 20% Chance
-	        					if(r>0 && r<20) {event.setEvent("Enderdragon");}
+	        					if(eventPicker>0 && eventPicker<20) {event.setEvent("Enderdragon");}
 	        					
 	        					// Wither with 10% Chance
-	        					else if(r>20 && r<30){event.setEvent("Wither");}
+	        					else if(eventPicker>20 && eventPicker<30){event.setEvent("Wither");}
 	        					
 	        					// Field of Flowers with 10% Chance
-	        					else if(r>=30 && r<40){event.setEvent("Field of Flowers");}
+	        					else if(eventPicker>=30 && eventPicker<40){event.setEvent("Field of Flowers");}
 	        					
 	        					// Lightning Storm 10% Chance
-	        					else if(r>=40 && r<50){event.setEvent("Lightning Storm");}
+	        					else if(eventPicker>=40 && eventPicker<50){event.setEvent("Lightning Storm");}
 	        					
 	        					// Explosive Drops 10% Chance
-	        					else if(r>=50 && r<60){event.setEvent("Explosive Drops");}
+	        					else if(eventPicker>=50 && eventPicker<60){event.setEvent("Explosive Drops");}
 	        					
 	        					// Hot Potato 5% Chance
-	        					else if(r>=60 && r<65){event.setEvent("Hot Potato");}
+	        					else if(eventPicker>=60 && eventPicker<65){event.setEvent("Hot Potato");}
 	        					
 	        					// PvP On 20% Chance
-	        					else if(r>=65 && r<85){event.setEvent("PvP On");}
+	        					else if(eventPicker>=65 && eventPicker<85){event.setEvent("PvP On");}
 	        					
 	        					// Giants 5% Chance
-	        					else if(r>=85 && r<90){event.setEvent("Giants");}
+	        					else if(eventPicker>=85 && eventPicker<90){event.setEvent("Giants");}
 	        					
 	        					// Baby Zombie Swarm 5% Chance
-	        					else if(r>=90 && r<95){event.setEvent("Baby Zombie Swarm");}
+	        					else if(eventPicker>=90 && eventPicker<95){event.setEvent("Baby Zombie Swarm");}
 	        					
 	        					// Corrupted Wolf Pack 5% Chance
-	        					else if(r>=95 && r<=100){event.setEvent("Corrupted Wolf Pack");}
+	        					else if(eventPicker>=95 && eventPicker<=100){event.setEvent("Corrupted Wolf Pack");}
 	        					
 	        				}// End of eventNight
 	        				
@@ -292,7 +304,7 @@ public class MobFighter extends JavaPlugin {
 				// ----------------- Anything that needs to be running whether it's day or night. ------------------------
 				
 				// This allows the /eventnight command to update and take.
-				eventNight = getConfig().getInt("EventNight");
+				eventNight = getConfig().getInt("Event Night");
 				
 			}// End of Run
         }, 0L, 1L);// End of Repeating Task
@@ -303,16 +315,31 @@ public class MobFighter extends JavaPlugin {
 	public void onDisable() {
 		
 		// Save any changes to configuration file:
-		getConfig().set("CurrentNight", night);
-		getConfig().setDefaults(getConfig());
+		getConfig().set("Current Night", night);
 		saveConfig();
 		
 		log("[MobFighter] Disabled!");
 		
 	}// End of onDisable()
 	
+	// Delay these commands by 5 seconds to allow the plugin to fully load.
+	private void runStartVariables(){
+		server.getScheduler().scheduleSyncDelayedTask(this, new Runnable() 
+		{
+			public void run() 
+			{
+				server.dispatchCommand(Bukkit.getConsoleSender(),"setboards");
+				server.dispatchCommand(Bukkit.getConsoleSender(),"gamerule keepInventory true");
+				server.dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w "+ worldName + " block-break deny");
+			}
+		}, 20*5);
+		getConfig().set("Just Added", false);
+		saveConfig();
+		reloadConfig();
+	}
+	
 	// 30 Seconds of protection from monsters when the night begins.
-	public void spawnProtection()
+	private void spawnProtection()
 	{
 		runningProtect = true;
 		
@@ -337,23 +364,53 @@ public class MobFighter extends JavaPlugin {
 		}
 	}// End of spawnProtection.
 	
+	// Gets the highest scores from both offline and online players and compares them to find the top player.
 	@SuppressWarnings("deprecation")
 	private String topPlayer(){
 		Objective obj = Bukkit.getScoreboardManager().getMainScoreboard().getObjective("Total_Kills");
 		String topPlayer = "";
 		
 		OfflinePlayer[] players = Bukkit.getOfflinePlayers();
-		OfflinePlayer player = null;
+		OfflinePlayer playerOff = null;
 		if(players.length > 0)
-			player = players[0];
+			playerOff = players[0];
 		
-		for(int p=(players.length - 1); p>0;p--){
-			if(player != null)
-				if(obj.getScore(player).getScore() < obj.getScore(players[p]).getScore()){
-					player = players[p];
-					topPlayer = player.getName().toString();
-				}
+		// Find top player of offline players.
+		for(int p=(players.length - 1); p>0;p--)
+			if(playerOff != null)
+				if(obj.getScore(playerOff).getScore() < obj.getScore(players[p]).getScore())
+					playerOff = players[p];
+		
+		Player[] playersOn = new Player[server.getOnlinePlayers().size()];
+		int i = 0;
+		for(Player p : server.getOnlinePlayers()){
+			playersOn[i] = p;
+			i++;
 		}
+		
+		Player playerOn = null;
+		if(playersOn.length > 0)
+			playerOn =  playersOn[0];
+		
+		// Find top player of online players.
+		for(int p=(playersOn.length - 1); p>0; p--)
+			if(playerOn != null)
+				if(obj.getScore(playerOn).getScore() < obj.getScore(playersOn[p]).getScore())
+					playerOn = playersOn[p];
+		
+		// Checks all cases of null players.
+		if(playerOff == null && playerOn == null)
+			return "";
+		else if(playerOff == null)
+			return playerOn.getName().toString();
+		else if(playerOn == null)
+			return playerOff.getName().toString();
+		
+		// Find the top player between offline's top player & online's top player.
+		else if(obj.getScore(playerOff).getScore() < obj.getScore(playerOn).getScore())
+			topPlayer = playerOn.getName().toString();
+		else
+			topPlayer = playerOff.getName().toString();
 		
 		return topPlayer;
 	}
