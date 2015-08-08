@@ -1,8 +1,7 @@
 package net.grasinga.MobFighter;
 
 import java.util.ArrayList;
-import java.util.List;
-
+import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -49,10 +48,8 @@ public class MobFighterListener implements Listener {
 	
 	// Economy:
 	private static Economy econ = VaultEco.getEconomy();
-	
-	// Variables for drop items and sell values:
-	public static ArrayList<String> mobDrops = new ArrayList<String>();
-    public static ArrayList<String> mobDropPrices = new ArrayList<String>();
+    
+    private Map<String, Object> sellingItems;
 	
 	// Variables to help regenerate blocks during the day:
 	private ArrayList<BlockState> blockStates = new ArrayList<BlockState>();
@@ -62,29 +59,13 @@ public class MobFighterListener implements Listener {
 	public MobFighterListener(JavaPlugin p){
 		mobfighter = p;
 		
-		// Gets the drops and their prices.
-		fillDrops();
-		fillDropPrices();
+		// Gets the sellable items.
+		fillSellables();
 	}
 	
-	// Gets the list of drops from the configuration file.
-	private void fillDrops() {
-		List<String> list = mobfighter.getConfig().getStringList("MobDrops");
-		String[] a = list.toArray(new String[0]);
-		for(int i=0;i<a.length;i++)
-		{
-			mobDrops.add(a[i]);
-		}
-	}
-	
-	// Gets the list of prices for the drops from the configuration file.
-	private void fillDropPrices() {
-		List<String> list = mobfighter.getConfig().getStringList("MobDropPrice");
-		String[] a = list.toArray(new String[0]);
-		for(int i=0;i<a.length;i++)
-		{
-			mobDropPrices.add(a[i]);
-		}
+	// Gets the list of sellable items from the configuration file.
+	private void fillSellables() {
+		sellingItems = mobfighter.getConfig().getConfigurationSection("Selling Items").getValues(false);
 	}
 	
 	// Boosts the player's health scale based on the configuration file's info.
@@ -172,20 +153,19 @@ public class MobFighterListener implements Listener {
 	{
 		final Player player = event.getPlayer();
 		
-		//Sell Drops:
+		// Sell Items:
 		if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)
 		{
-			for(int a=0;a<mobDrops.size();a++)
-			{
-				if(player.getItemInHand().getType().toString().equals(mobDrops.get(a).toString()))
+			for(int a=0;a<sellingItems.size();a++)
+				if(sellingItems.containsKey(player.getItemInHand().getType().toString()))
 				{
-					double dropPrice = Double.parseDouble(mobDropPrices.get(a));
+					String itemName = player.getItemInHand().getType().toString();
+					double dropPrice = Double.parseDouble(sellingItems.get(itemName).toString());
 					dropPrice *= player.getItemInHand().getAmount();
 					player.setItemInHand(new ItemStack(Material.AIR));
 					econ.depositPlayer(player.getDisplayName(),dropPrice);
-					player.sendMessage(ChatColor.GREEN + "Sold " + mobDrops.get(a).toString() + " for: $" + dropPrice);
+					player.sendMessage(ChatColor.GREEN + "Sold " + itemName + " for: $" + dropPrice);
 				}
-			}
 		}
 		
 		// Creative mode switch

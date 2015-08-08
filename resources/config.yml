@@ -1,12 +1,12 @@
 # Default Configuration File for MobFighter!
 # Made by Grasinga.
-# World Name should be whatever world you are wanting the plugin to work on.
+# Just Added should be left alone. It sets up the scoreboards on the first time loading the plug-in.
+# World Name should be whatever world you are wanting the plug-in to work on.
 # Current Night is what night it is currently.
 # Event Night is the night that events occur on. Default is every 5 nights.
 # Creative Immunity is for OPs (It allows you to bypass many settings like being able to break and place blocks!)
-# MobDrops are the ids of the item you want to sell. 
-# MobDropPrice is the amount you want the corresponding item in MobDrops spot to cost.
-# First spot in MobDrops is IRON_INGOT. The First spot in MobDropPrice is 50, so IRON_INGOT sells for $50.
+# Top Player is the player who has the most Total_Kills. Grants access to /eliteshop
+# Selling Items is the list of items with their prices that can be sold in-game by left-clicking with the item in hand. 
 Just Added: true
 World Name: world
 Current Night: 0
@@ -14,67 +14,35 @@ Event Night: 5
 Creative Immunity:
 - Grasinga
 Top Player: Grasinga
-MobDrops:
-- IRON_INGOT
-- GOLD_INGOT
-- DIAMOND
-- STRING
-- SULPHUR
-- BONE
-- ROTTEN_FLESH
-- ENDER_PEARL
-- GLASS_BOTTLE
-- SPIDER_EYE
-- CARROT_ITEM
-- POTATO_ITEM
-- GLOWSTONE_DUST
-- SUGAR
-- STICK
-- ARROW
-- REDSTONE
-- GOLD_RECORD
-- GREEN_RECORD
-- RECORD_3
-- RECORD_4
-- RECORD_5
-- RECORD_6
-- RECORD_7
-- RECORD_8
-- RECORD_9
-- RECORD_10
-- RECORD_11
-- RECORD_12
-- DRAGON_EGG
-- SKULL_ITEM
-MobDropPrice:
-- 50
-- 5
-- 100
-- 3
-- 3
-- 3
-- 3
-- 20
-- 10
-- 3
-- 20
-- 20
-- 20
-- 20
-- 20
-- 1
-- 20
-- 1000
-- 1000
-- 1000
-- 1000
-- 1000
-- 1000
-- 1000
-- 1000
-- 1000
-- 1000
-- 1200
-- 1000
-- 2500
-- 1500
+Selling Items:
+  ROTTEN_FLESH: 3
+  STRING: 3
+  SPIDER_EYE: 3
+  BONE: 3
+  ARROW: 1
+  SULPHUR: 3
+  ENDER_PEARL: 20
+  GLASS_BOTTLE: 10
+  CARROT_ITEM: 20
+  POTATO_ITEM: 20
+  GLOWSTONE_DUST: 20
+  SUGAR: 20
+  STICK: 20
+  REDSTONE: 20
+  GOLD_INGOT: 5
+  IRON_INGOT: 25
+  DIAMOND: 100
+  GOLD_RECORD: 1000
+  GREEN_RECORD: 1000
+  RECORD_3: 1000
+  RECORD_4: 1000
+  RECORD_5: 1000
+  RECORD_6: 1000
+  RECORD_7: 1000
+  RECORD_8: 1000
+  RECORD_9: 1000
+  RECORD_10: 1000
+  RECORD_11: 1200
+  RECORD_12: 1000
+  DRAGON_EGG: 2500
+  SKULL_ITEM: 1500
