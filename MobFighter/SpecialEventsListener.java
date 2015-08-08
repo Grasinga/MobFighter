@@ -62,6 +62,7 @@ public class SpecialEventsListener implements Listener{
 		undeadHeart.setItemMeta(meta2);
 	}
 	
+	// Handles getting the Power Flower from the Field of Flowers event.
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void playerClick(PlayerInteractEvent event){
 		Player player = event.getPlayer();
@@ -69,10 +70,18 @@ public class SpecialEventsListener implements Listener{
 			if(event.getAction() == Action.LEFT_CLICK_BLOCK)
 				if(player.getItemInHand().getType().equals(Material.DIAMOND_SPADE))
 				{
-					player.getInventory().remove(Material.DIAMOND_SPADE);
+				// Stop the swing, get the position of the spade, check if the block is the right type of flower, pop the flower and clears the spade.
+					event.setCancelled(true);
+					int index = player.getInventory().getHeldItemSlot();
 					Block block = event.getClickedBlock();
-					if(block.getType().equals(Material.RED_ROSE))
-						block.breakNaturally();
+					for(ItemStack s : block.getDrops())
+						if(s.getDurability() == new ItemStack(Material.RED_ROSE).getDurability()){
+							block.breakNaturally();
+							player.getInventory().clear(index);
+						}
+						else // Not the right type of flower.
+							return;
+					// Give sage book if the correct flower was popped.
 					ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
 					BookMeta bm = (BookMeta) book.getItemMeta();
 					bm.setPages(Arrays.asList("The Lords and other Dwellers of the Overworld have recognized you. They will be willing to give you more power if you can gather enough Tainted Souls."));
@@ -92,8 +101,7 @@ public class SpecialEventsListener implements Listener{
 		
 		// Special Flower:
 		if(SpecialEvents.flowers){
-			ItemStack theFlower = new ItemStack(Material.RED_ROSE);
-			if(event.getItem().getItemStack().getData().equals(theFlower.getData()))
+			if(event.getItem().getItemStack().getDurability() == new ItemStack(Material.RED_ROSE).getDurability())
 			{
 				ItemStack flower = event.getItem().getItemStack();
 				ItemMeta itemMeta = flower.getItemMeta();
@@ -364,8 +372,8 @@ public class SpecialEventsListener implements Listener{
 						Bukkit.broadcastMessage(ChatColor.GREEN + "A field of flowers appears!");
 						
 						// Sets the positions to spawn in flowers.
-						Location a = new Location(world,(world.getSpawnLocation().getBlockX()-150),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-150));
-						Location b = new Location(world,(world.getSpawnLocation().getBlockX()+150),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+150));
+						Location a = new Location(world,(world.getSpawnLocation().getBlockX()-100),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-100));
+						Location b = new Location(world,(world.getSpawnLocation().getBlockX()+100),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+100));
 						int xMin = Math.min(a.getBlockX(),b.getBlockX());
 						int yMin = Math.min(a.getBlockY(),b.getBlockY());
 						int zMin = Math.min(a.getBlockZ(),b.getBlockZ());
@@ -374,7 +382,7 @@ public class SpecialEventsListener implements Listener{
 						int zMax = Math.max(a.getBlockZ(),b.getBlockZ());
 						
 						// Gets the spot to set the special flower.
-						int r = (int)(Math.random()*90000+1);
+						int r = (int)(Math.random()*10000+1);
 						int sFlower = 0;
 						
 						for (int x = xMin; x<=xMax; x++)
@@ -400,8 +408,8 @@ public class SpecialEventsListener implements Listener{
 						}
 						
 						// Sets the positions to remove flowers near spawn.
-						Location c = new Location(world,(world.getSpawnLocation().getBlockX()-100),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-100));
-						Location d = new Location(world,(world.getSpawnLocation().getBlockX()+100),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+100));
+						Location c = new Location(world,(world.getSpawnLocation().getBlockX()-10),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-10));
+						Location d = new Location(world,(world.getSpawnLocation().getBlockX()+10),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+10));
 						int xMin2 = Math.min(c.getBlockX(),d.getBlockX());
 						int yMin2 = Math.min(c.getBlockY(),d.getBlockY());
 						int zMin2 = Math.min(c.getBlockZ(),d.getBlockZ());
@@ -453,7 +461,10 @@ public class SpecialEventsListener implements Listener{
 							    }
 							}
 						}
-						Bukkit.broadcastMessage(ChatColor.GREEN + "The flowers seem to have disappeared!");
+						
+						// Quick way to make sure this message only runs once.
+						if(!initialFlowers)
+							Bukkit.broadcastMessage(ChatColor.GREEN + "The flowers seem to have disappeared!");
 						
 						initialFlowers = true;
 						

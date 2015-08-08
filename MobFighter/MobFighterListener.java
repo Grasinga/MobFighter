@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityCreatePortalEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -721,6 +722,19 @@ public class MobFighterListener implements Listener {
 		event.setCancelled(true);
 	}
 	
+	// No block breaking allowed on server.
+		@EventHandler(priority = EventPriority.NORMAL)
+		public void onPlaceBreak(BlockBreakEvent event){
+			Player player = event.getPlayer();
+			
+			// Block breaking allowed if the player has creative immunity.
+			for(int i=0;i<mobfighter.getConfig().getList("Creative Immunity").size();i++)
+				if(player.getDisplayName().equalsIgnoreCase(mobfighter.getConfig().getList("Creative Immunity").get(i).toString()))
+						return;
+			
+			event.setCancelled(true);
+		}
+	
 	// Handles player interaction with anvil while in or out of creative.
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -858,13 +872,13 @@ public class MobFighterListener implements Listener {
 			for(int i=0;i<blockStates.size();i++)
 			{
 				final BlockState state = blockStates.get(i);
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable()
-				{
-					public void run()
+					Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable()
 					{
-						state.update(true, false);
-					}
-				}, fixBlockDelay);
+						public void run()
+					{
+							state.update(true, false);
+						}
+					}, fixBlockDelay);
 				blockStates.remove(i);
 			}
 	}
@@ -879,7 +893,7 @@ public class MobFighterListener implements Listener {
         	b.setType(Material.AIR);
         	blockStates.add(state);
 
-			int delay = 20;
+			int delay = 5;
 	        if((b.getType() == Material.SAND || b.getType() == Material.GRAVEL))
 	        	delay++;
 	        
