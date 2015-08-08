@@ -21,6 +21,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityCreatePortalEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -143,6 +144,25 @@ public class MobFighterListener implements Listener {
 		{
 			mobfighter.getConfig().set("HealthScale." + p.getDisplayName(), p.getHealthScale());
 			mobfighter.saveConfig();
+			mobfighter.reloadConfig();
+		}
+	}
+	
+	// The magic behind the health boost. Reduces damage by 10% for each boost used. (All 5 = Half Damage)
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void playerHurt(EntityDamageEvent event){
+		if(event.getEntity() instanceof Player){
+			if(mobfighter.getConfig().getDouble("HealthScale." + ((Player) event.getEntity()).getDisplayName()) != 0)
+				if(mobfighter.getConfig().getDouble("HealthScale." + ((Player) event.getEntity()).getDisplayName()) == 24.0)
+					event.setDamage(event.getDamage() - (event.getDamage() / 6));
+				else if(mobfighter.getConfig().getDouble("HealthScale." + ((Player) event.getEntity()).getDisplayName()) == 28.0)
+					event.setDamage(event.getDamage() - (event.getDamage() / 5));
+				else if(mobfighter.getConfig().getDouble("HealthScale." + ((Player) event.getEntity()).getDisplayName()) == 32.0)
+					event.setDamage(event.getDamage() - (event.getDamage() / 4));
+				else if(mobfighter.getConfig().getDouble("HealthScale." + ((Player) event.getEntity()).getDisplayName()) == 36.0)
+					event.setDamage(event.getDamage() - (event.getDamage() / 3));
+				else if(mobfighter.getConfig().getDouble("HealthScale." + ((Player) event.getEntity()).getDisplayName()) == 40.0)
+					event.setDamage(event.getDamage() / 2);
 		}
 	}
 	
@@ -203,10 +223,18 @@ public class MobFighterListener implements Listener {
 				int amount = player.getItemInHand().getAmount();
 				player.setItemInHand(new ItemStack(Material.AIR));
 				player.setHealthScale(player.getHealthScale() + 4 * amount);
-				if(player.getHealthScale() > 40)
+				if(player.getHealthScale() > 40) // Refunds the money spent buying it if the player has used 5 already.
 				{
 					player.setHealthScale(40);
 					player.sendMessage(ChatColor.RED + "Your health is already boosted to the max!");
+					VaultEco.getEconomy().depositPlayer(player, 2000);
+					player.sendMessage(ChatColor.GREEN + "Refunded: $2,000.00");
+				}
+				if(player.getHealthScale() > 20) // Sets scale in config and then reloads to apply.
+				{
+					mobfighter.getConfig().set("HealthScale." + player.getDisplayName(), player.getHealthScale());
+					mobfighter.saveConfig();
+					mobfighter.reloadConfig();
 				}
 			}
 			else if(player.getItemInHand().getType().equals(Material.STONE_BUTTON))

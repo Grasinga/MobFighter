@@ -330,7 +330,6 @@ public class MobFighter extends JavaPlugin {
 			{
 				server.dispatchCommand(Bukkit.getConsoleSender(),"setboards");
 				server.dispatchCommand(Bukkit.getConsoleSender(),"gamerule keepInventory true");
-				server.dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w "+ worldName + " block-break deny");
 			}
 		}, 20*5);
 		getConfig().set("Just Added", false);
