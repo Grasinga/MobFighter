@@ -45,7 +45,6 @@ public class SpecialEventsListener implements Listener{
 	private boolean initialFlowers = true;
 	
 	// Important variables to be used in other classes.
-	public static String hasPotato = "";
 	public static ItemStack taintedSoul = new ItemStack(Material.EMERALD);
 	public static ItemStack undeadHeart = new ItemStack(Material.COAL);
 	
@@ -140,7 +139,6 @@ public class SpecialEventsListener implements Listener{
 					targetPlayer.getInventory().addItem(item);
 					player.getInventory().remove(item);
 				}
-			hasPotato = targetPlayer.getDisplayName();
 		}
 	}
 	
@@ -315,9 +313,10 @@ public class SpecialEventsListener implements Listener{
 					Bukkit.broadcastMessage(ChatColor.GREEN + "The flowers seem to have disappeared!");
 					
 					initialFlowers = true;
+					
+					SpecialEvents.flowers = false;
+					
 				}// End of night.
-				
-				SpecialEvents.flowers = false;
 				
 			}// End of flowers.			
 			
@@ -362,21 +361,15 @@ public class SpecialEventsListener implements Listener{
 		// For giant event.
 		if(event.getEntity() instanceof Giant)
 		{
-			Giant g = (Giant) event.getEntity();
 			ItemStack item = new ItemStack(Material.DIAMOND_BLOCK);
 			event.getDrops().add(item);
 			event.setDroppedExp(10000);
 			SpecialEvents.giantsKilled++;
-			Bukkit.broadcastMessage(ChatColor.YELLOW + "Giants defeated: " + SpecialEvents.giantsKilled);
-			List<Entity> entities = g.getNearbyEntities(100, 100, 100);
-			int num = 0;
-			for(Entity e : entities)
-			{
-				if(e instanceof Giant)
-					num++;
-			}
-			if(num == 0){
-				Bukkit.broadcastMessage("Now that all of the Giants have been defeated, it will become day in 10 seconds!");
+			Bukkit.broadcastMessage(ChatColor.YELLOW + "Total Giants defeated: " + SpecialEvents.giantsKilled);
+			
+			Bukkit.broadcastMessage(ChatColor.YELLOW + "Giants left this night: " + (SpecialEvents.giantsKilled % 4));
+			if(SpecialEvents.giantsKilled % 4 == 0){
+				Bukkit.broadcastMessage(ChatColor.GOLD + "Now that all of the Giants have been defeated, it will become day in 10 seconds!");
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable() 
 				{
 					public void run() 

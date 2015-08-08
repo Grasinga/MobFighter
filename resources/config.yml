@@ -2,18 +2,23 @@
 # Made by Grasinga.
 # WorldName should be whatever world you are wanting the plugin to work on.
 # CurrentNight is what night it is currently.
+# EventNight is the night that events occur on. Default is every 5 nights.
 # Creative Immunity is for OPs (It allows you to bypass being set to Survival after anvil repair/combine.)
-# EventNight is the night that events occur on. Default is every 10 nights.
 # MobDrops are the ids of the item you want to sell. 
 # MobDropPrice is the amount you want the corresponding item in MobDrops spot to cost.
-# First spot in MobDrops is IRON_INGOT. The First spot in MobDropPrice is 20, so Iron Ingot sells for $20.
-WorldName: world
-CurrentNight: 0
+# First spot in MobDrops is WRITTEN_BOOK. The First spot in MobDropPrice is 0, so WRITTEN_BOOK sells for $0.
+# WRITTEN_BOOK is in there to sell back the books a player has read. (Frees up inventory space.)
+World Name: world
+Current Night: 0
+Event Night: 5
 Creative Immunity:
 - Grasinga
-EventNight: 5
+Top Player: Grasinga
 MobDrops:
+- WRITTEN_BOOK
 - IRON_INGOT
+- GOLD_INGOT
+- DIAMOND
 - STRING
 - SULPHUR
 - BONE
@@ -43,7 +48,10 @@ MobDrops:
 - DRAGON_EGG
 - SKULL_ITEM
 MobDropPrice:
-- 20
+- 0
+- 50
+- 5
+- 100
 - 3
 - 3
 - 3

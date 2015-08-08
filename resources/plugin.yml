@@ -22,6 +22,8 @@ commands:
     description: Toggle ready status. See who's ready with /ready list
   getshop:
     description: Gives the player the shop item.
+  eliteshop:
+    description: Opens the elite shop.
   getbook:
     description: Get's the book specifed with /getbook <nameOfBook>
   craft:

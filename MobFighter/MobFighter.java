@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -12,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scoreboard.Objective;
 
 // Main class
 public class MobFighter extends JavaPlugin {
@@ -62,7 +64,7 @@ public class MobFighter extends JavaPlugin {
 		
 		// Sets values for variables (VERY IMPORTANT TO SET HERE):
 		server = Bukkit.getServer();
-		worldName = getConfig().getString("WorldName");
+		worldName = getConfig().getString("World Name");
 		world = server.getWorld(worldName);
 		
 		// Allows the use of game and special events.
@@ -114,11 +116,16 @@ public class MobFighter extends JavaPlugin {
 					// When the day first starts: change money to tab view, set players money on tab view, teleport players to spawn, and butcher all mobs.
 					if(startDay)
             		{
+						// Gets the top player for Elite Shop
+						getConfig().set("Top Player", topPlayer());
+						saveConfig();
+						reloadConfig();
+						
 						// Clears ready list.
 						playerNames.removeAll();
 						
 						// Prevents Slimes from spawning and resets global flags.
-						server.dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w "+ worldName + " deny-spawn Slime");
+						server.dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w "+ worldName + " deny-spawn Slime, Pig, Sheep, Cow, Horse, Rabbit");
 						
         				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives setDisplay list Money_Top");
             			Collection<? extends Player> list = Bukkit.getOnlinePlayers();
@@ -134,8 +141,6 @@ public class MobFighter extends JavaPlugin {
     					server.getWorld(worldName).setPVP(true);
         				
         				// End all Special Events:
-        				
-        				SpecialEvents.flowers = false;
         				
         				if(SpecialEvents.lightning)
                 		{
@@ -161,7 +166,6 @@ public class MobFighter extends JavaPlugin {
                 				}
                 			}
                 			SpecialEvents.potato = false;
-                			SpecialEventsListener.hasPotato = "";
                 		}
                 		
         				SpecialEvents.babyZombies = false;
@@ -180,8 +184,9 @@ public class MobFighter extends JavaPlugin {
             		}// End of day start.
 					
 					// Gives the players a heads up before it becomes night time.
-					if(world.getTime() == 12700)
-    					Bukkit.broadcastMessage(ChatColor.GOLD + "It will be night in 50 seconds!");
+					if(!world.getPlayers().isEmpty())
+						if(world.getTime() == 12700)
+	    					Bukkit.broadcastMessage(ChatColor.GOLD + "It will be night in 50 seconds!");
 					
 				}// End of day time.
 				
@@ -331,6 +336,27 @@ public class MobFighter extends JavaPlugin {
 			}, 20*30);
 		}
 	}// End of spawnProtection.
+	
+	@SuppressWarnings("deprecation")
+	private String topPlayer(){
+		Objective obj = Bukkit.getScoreboardManager().getMainScoreboard().getObjective("Total_Kills");
+		String topPlayer = "";
+		
+		OfflinePlayer[] players = Bukkit.getOfflinePlayers();
+		OfflinePlayer player = null;
+		if(players.length > 0)
+			player = players[0];
+		
+		for(int p=(players.length - 1); p>0;p--){
+			if(player != null)
+				if(obj.getScore(player).getScore() < obj.getScore(players[p]).getScore()){
+					player = players[p];
+					topPlayer = player.getName().toString();
+				}
+		}
+		
+		return topPlayer;
+	}
 	
 	// Simple log method for short handing.
 	private void log(String s){System.out.println(s);}

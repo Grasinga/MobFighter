@@ -50,10 +50,6 @@ public class MobFighterListener implements Listener {
 	// Variables for drop items and sell values:
 	public static ArrayList<String> mobDrops = new ArrayList<String>();
     public static ArrayList<String> mobDropPrices = new ArrayList<String>();
-    
-    // Special items variables:
-	public static ItemStack taintedSoul = new ItemStack(Material.EMERALD);
-	public static ItemStack undeadHeart = new ItemStack(Material.COAL);
 	
 	// Variables to help regenerate blocks during the day:
 	private ArrayList<BlockState> blockStates = new ArrayList<BlockState>();
@@ -621,18 +617,18 @@ public class MobFighterListener implements Listener {
 			}// End of main shop.
 			if(inventory.getName().equals(EliteShop.shopName()))
 			{
-				// No items can be taken from shop.
+				// No items can be taken from the elite shop.
 				event.setCancelled(true);
-				
-				if(clicked.getType() == Material.RED_MUSHROOM)
+
+				if(clicked.getType() == Material.MONSTER_EGG)
 				{
-					if(VaultEco.getEconomy().getBalance(player) < 2000)
+					if(VaultEco.getEconomy().getBalance(player) < 500)
 					{
 						player.sendMessage(ChatColor.RED + "You do not have enough money!");
 						return;
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 2000);
-					player.getInventory().addItem(new ItemStack(Material.RED_MUSHROOM));
+					VaultEco.getEconomy().withdrawPlayer(player, 500);
+					player.getInventory().addItem(clicked);
 				}
 				else if(clicked.getType() == Material.STONE_BUTTON)
 				{
@@ -643,6 +639,54 @@ public class MobFighterListener implements Listener {
 					}
 					VaultEco.getEconomy().withdrawPlayer(player, 10000);
 					player.getInventory().addItem(clicked);
+				}
+				else if(clicked.getType() == Material.RED_MUSHROOM)
+				{
+					if(VaultEco.getEconomy().getBalance(player) < 2000)
+					{
+						player.sendMessage(ChatColor.RED + "You do not have enough money!");
+						return;
+					}
+					VaultEco.getEconomy().withdrawPlayer(player, 2000);
+					player.getInventory().addItem(clicked);
+				}
+				else if(clicked.getType() == Material.RED_ROSE)
+				{
+					if(VaultEco.getEconomy().getBalance(player) < 1000)
+					{
+						player.sendMessage(ChatColor.RED + "You do not have enough money!");
+						return;
+					}
+					VaultEco.getEconomy().withdrawPlayer(player, 1000);
+					player.getInventory().addItem(clicked);
+				}
+				else if(clicked.getType() == Material.NETHER_STAR)
+				{
+					if(VaultEco.getEconomy().getBalance(player) < 1000000)
+					{
+						player.sendMessage(ChatColor.RED + "You do not have enough money!");
+						return;
+					}
+					VaultEco.getEconomy().withdrawPlayer(player, 1000000);
+					ItemStack star = new ItemStack(Material.NETHER_STAR,5);
+					ItemMeta meta = star.getItemMeta();
+					meta.setDisplayName(ChatColor.GREEN + "Swirling Souls");
+					star.setItemMeta(meta);
+					player.getInventory().addItem(star);
+				}
+				else if(clicked.getType() == Material.FIREWORK_CHARGE)
+				{
+					if(VaultEco.getEconomy().getBalance(player) < 1000000)
+					{
+						player.sendMessage(ChatColor.RED + "You do not have enough money!");
+						return;
+					}
+					VaultEco.getEconomy().withdrawPlayer(player, 1000000);
+					ItemStack fCharge = new ItemStack(Material.FIREWORK_CHARGE,5);
+					ItemMeta meta = fCharge.getItemMeta();
+					meta.setDisplayName(ChatColor.DARK_PURPLE + "Festering Darkness");
+					fCharge.setItemMeta(meta);
+					player.getInventory().addItem(fCharge);
 				}
 			}// End of elite shop.
 		}// End of null check.

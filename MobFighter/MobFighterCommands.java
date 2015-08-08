@@ -47,7 +47,7 @@ public class MobFighterCommands implements CommandExecutor {
 		
 		// Sets values
 		server = Bukkit.getServer();
-		worldName = mobfighter.getConfig().getString("WorldName");
+		worldName = mobfighter.getConfig().getString("World Name");
 		world = server.getWorld(worldName);
 		
 		// Get number of players on the server.
@@ -63,9 +63,8 @@ public class MobFighterCommands implements CommandExecutor {
 				try
 				{
 					sender.sendMessage(ChatColor.GREEN + "Reloading MobFighter's configuration file . . .");
-					mobfighter.getConfig().set("CurrentNight", MobFighter.nights);
+					mobfighter.getConfig().set("Current Night", MobFighter.nights);
 					mobfighter.saveConfig();
-					mobfighter.getConfig().setDefaults(mobfighter.getConfig());
 					mobfighter.reloadConfig();
 					sender.sendMessage(ChatColor.GREEN + "MobFighter's configuration file has been reloaded!");
 				}
@@ -103,8 +102,9 @@ public class MobFighterCommands implements CommandExecutor {
 				if(Integer.parseInt(args[0]) >= 0 && Integer.parseInt(args[0]) <= 1000000){
 					
 						MobFighter.nights = Integer.parseInt(args[0]);
-						mobfighter.getConfig().set("CurrentNight", Integer.parseInt(args[0]));
+						mobfighter.getConfig().set("Current Night", Integer.parseInt(args[0]));
 						mobfighter.saveConfig();
+						mobfighter.reloadConfig();
 						sender.sendMessage(ChatColor.BLUE + "Night set to: " + Integer.parseInt(args[0]));
 						return true;					
 				}
@@ -123,8 +123,9 @@ public class MobFighterCommands implements CommandExecutor {
 				}				
 				if(Integer.parseInt(args[0]) >= 1){
 					
-						mobfighter.getConfig().set("EventNight", Integer.parseInt(args[0]));
+						mobfighter.getConfig().set("Event Night", Integer.parseInt(args[0]));
 						mobfighter.saveConfig();
+						mobfighter.reloadConfig();
 						sender.sendMessage(ChatColor.BLUE + "Event night set to: " + Integer.parseInt(args[0]));
 						return true;					
 				}
@@ -245,7 +246,10 @@ public class MobFighterCommands implements CommandExecutor {
 			// Command to get the main shop.
 			else if(commandLabel.equalsIgnoreCase("eliteshop"))
 			{
-				player.openInventory(EliteShop.getShop());
+				if(sender.getName().toString().equalsIgnoreCase(mobfighter.getConfig().getString("Top Player")))
+					player.openInventory(EliteShop.getShop());
+				else
+					sender.sendMessage(ChatColor.RED + "Sorry, you are not the top player!");
 			}
 			
 			// Command to get helpful books.
@@ -317,14 +321,14 @@ public class MobFighterCommands implements CommandExecutor {
 					fCharge.setItemMeta(meta);
 					
 					// Get item needed by trading in coal (undeadHearts).
-					if(player.getInventory().containsAtLeast(coal, 576))
+					if(player.getInventory().containsAtLeast(coal, 1728))
 					{
 						player.getInventory().clear();
 						player.getInventory().addItem(fCharge);
 					}
 					
 					// Get the armor set if there are five Festering Darkness in the player's inventory.
-					else if(player.getInventory().containsAtLeast(fCharge, 1728))
+					else if(player.getInventory().containsAtLeast(fCharge, 5))
 					{
 						player.getInventory().clear();
 						ItemStack button = new ItemStack(Material.STONE_BUTTON);
@@ -411,7 +415,7 @@ public class MobFighterCommands implements CommandExecutor {
 						meta1.setDisplayName(ChatColor.AQUA + "Posiden's Helm");
 						dh.setItemMeta(meta1);
 						dh.addUnsafeEnchantment(new EnchantmentWrapper(0), 10);
-						dh.addUnsafeEnchantment(new EnchantmentWrapper(5), 20);
+						dh.addUnsafeEnchantment(new EnchantmentWrapper(7), 20);
 						dh.addUnsafeEnchantment(new EnchantmentWrapper(34), 20);
 						ItemStack dc = new ItemStack(Material.DIAMOND_CHESTPLATE);
 						ItemMeta meta2 = dc.getItemMeta();
