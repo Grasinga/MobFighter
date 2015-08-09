@@ -1,14 +1,11 @@
 package net.grasinga.MobFighter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
@@ -230,37 +227,25 @@ public class MainShop {
 		apple.setItemMeta(twenty);
 		shopInv.setItem(48, apple);
 		
-		// Stater book with useful information (free)
-		ItemStack starterBook = new ItemStack(Material.WRITTEN_BOOK);
-		BookMeta bm = (BookMeta) starterBook.getItemMeta();
-		// Book Page Per Line
-		bm.setPages(Arrays.asList(
-				"Welcome to:\nMobFighter!\n\nThis server is a\nmob fighting game!\nYou kill mobs and\npick up their loot\nat night so you\ncan sell it\nduring the day to\nget better gear!\nAs you play you\nmay notice a\n",
-				"message saying \n\"Night: #\" this\nlets you know the\ncurrent night and\nhelps you prepare\nfor the events!\nEvents happen every\nfive waves varying\nfrom fighting the\nEnderdragon, to\nstrolling in a\nmeadow of flowers.\n",
-				"Commands:\n/getshop\n\n/ready : Toggles ready status!\n\n/ready list\n/night\n/craft\n/call <username>\n/bring <username>\n/exchange\n/getbook <name>",
-				"Emojies Spice up\nchat!\n\nType:\n/help mmemoji\n/help mmemoji 2\n/help mmemoji 3\n\nSee what emojies\nyou can use!\n\nThanks for reading!"));
-		bm.setAuthor("Mob Fighter");
-		bm.setTitle("Mob Fighter Info");
-		ArrayList<String> bookLore = new ArrayList<String>();
-		bookLore.add(ChatColor.WHITE + "Price: FREE");
-		bm.setLore(bookLore);
-		starterBook.setItemMeta(bm);
-		shopInv.setItem(6, starterBook);
+		// Creative mode block for anvil use $200
+		ItemStack brick = new ItemStack(Material.BRICK);
+		ItemMeta brickMeta = brick.getItemMeta();
+		ArrayList<String> brickLore = new ArrayList<String>();
+		brickLore.add(ChatColor.WHITE + "Price: $200.00 | " + ChatColor.ITALIC + "Allows for bypass with anvil.");
+		brickMeta.setDisplayName("Creative");
+		brickMeta.setLore(brickLore);
+		brick.setItemMeta(brickMeta);
+		shopInv.setItem(6, brick);
 		
-		// Book that explains why creative is needed for anvil enchant combines (free)
-		ItemStack anvilBook = new ItemStack(Material.WRITTEN_BOOK);
-		BookMeta bm2 = (BookMeta) anvilBook.getItemMeta();
-		// Book Page Per Line
-		bm2.setPages(Arrays.asList(
-				"The anvil has a restriction set on any enchament combines that are over level 40.\n\nMinecraft Wiki:\n\nIf the job would cost 40 or more levels, it will be rejected as \"Too Expensive!\". (This does not apply in creative mode.)",
-				"So in order to combine items that are \"Too Expensive!\" a player can buy creative in order to combine the two items. The player also has to have at least 60 levels!"));
-		bm2.setAuthor("Mob Fighter");
-		bm2.setTitle("Anvil - Creative");
-		ArrayList<String> bookLore2 = new ArrayList<String>();
-		bookLore2.add(ChatColor.WHITE + "Price: FREE");
-		bm2.setLore(bookLore2);
-		anvilBook.setItemMeta(bm2);
-		shopInv.setItem(7, anvilBook);
+		// Crafting bench for $1,000
+		ItemStack bench = new ItemStack(Material.WORKBENCH);
+		ItemMeta benchMeta = brick.getItemMeta();
+		ArrayList<String> benchLore = new ArrayList<String>();
+		benchLore.add(ChatColor.WHITE + "Price: $1000.00 | " + ChatColor.ITALIC + "Allows player to craft 1 item.");
+		benchMeta.setDisplayName("Crafting (With item in hand, use /craft)");
+		benchMeta.setLore(benchLore);
+		bench.setItemMeta(benchMeta);
+		shopInv.setItem(7, bench);
 		
 		// Book for $50
 		ItemStack book = new ItemStack(Material.BOOK);
@@ -297,6 +282,21 @@ public class MainShop {
 		pot4.setItemMeta(twenty);
 		shopInv.setItem(35, pot4);
 		
+		// 10 Gold Ingots for $100
+		ItemStack gold = new ItemStack(Material.GOLD_INGOT,10);
+		gold.setItemMeta(hundred);
+		shopInv.setItem(51, gold);
+		
+		// 10 Iron Ingots for $1,000
+		ItemStack iron = new ItemStack(Material.IRON_INGOT,10);
+		iron.setItemMeta(oneThousand);
+		shopInv.setItem(52, iron);
+		
+		// 10 Diamonds for $2,000
+		ItemStack diamond = new ItemStack(Material.DIAMOND,10);
+		diamond.setItemMeta(twoThousand);
+		shopInv.setItem(50, diamond);
+		
 		// Lapis for $50
 		ItemStack lapis = new ItemStack(Material.LAPIS_BLOCK);
 		ItemMeta lapisMeta = lapis.getItemMeta();
@@ -304,42 +304,7 @@ public class MainShop {
 		lapisLore.add(ChatColor.WHITE + "Price: $50.00 | " + ChatColor.ITALIC + "Used for enchanting!");
 		lapisMeta.setLore(lapisLore);
 		lapis.setItemMeta(lapisMeta);
-		shopInv.setItem(41, lapis);
-		
-		// 10 Gold Ingots for $100
-		ItemStack gold = new ItemStack(Material.GOLD_INGOT,10);
-		gold.setItemMeta(hundred);
-		shopInv.setItem(42, gold);
-		
-		// 10 Iron Ingots for $1,000
-		ItemStack iron = new ItemStack(Material.IRON_INGOT,10);
-		iron.setItemMeta(oneThousand);
-		shopInv.setItem(43, iron);
-		
-		// 10 Diamonds for $2,000
-		ItemStack diamond = new ItemStack(Material.DIAMOND,10);
-		diamond.setItemMeta(twoThousand);
-		shopInv.setItem(44, diamond);
-		
-		// Creative mode block for anvil use $200
-		ItemStack brick = new ItemStack(Material.BRICK);
-		ItemMeta brickMeta = brick.getItemMeta();
-		ArrayList<String> brickLore = new ArrayList<String>();
-		brickLore.add(ChatColor.WHITE + "Price: $200.00 | " + ChatColor.ITALIC + "Allows for bypass with anvil.");
-		brickMeta.setDisplayName("Creative");
-		brickMeta.setLore(brickLore);
-		brick.setItemMeta(brickMeta);
-		shopInv.setItem(51, brick);
-		
-		// Crafting bench for $1,000
-		ItemStack bench = new ItemStack(Material.WORKBENCH);
-		ItemMeta benchMeta = brick.getItemMeta();
-		ArrayList<String> benchLore = new ArrayList<String>();
-		benchLore.add(ChatColor.WHITE + "Price: $1000.00 | " + ChatColor.ITALIC + "Allows player to craft 1 item.");
-		benchMeta.setDisplayName("Crafting (With item in hand, use /craft)");
-		benchMeta.setLore(benchLore);
-		bench.setItemMeta(benchMeta);
-		shopInv.setItem(52, bench);
+		shopInv.setItem(53, lapis);
 	} 
 	
 	// Method to pass shop name to other classes.

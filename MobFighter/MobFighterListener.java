@@ -147,6 +147,7 @@ public class MobFighterListener implements Listener {
 		}
 	}
 
+	// Handles multiple instances of player clicks.
 	@EventHandler(priority = EventPriority.HIGH)
 	public void playerClick(PlayerInteractEvent event)
 	{
@@ -258,6 +259,7 @@ public class MobFighterListener implements Listener {
 		
 	}
 	
+	// Handles selling items with left-click.
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void sellClick(PlayerInteractEvent event){
