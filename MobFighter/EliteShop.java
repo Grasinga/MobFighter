@@ -25,6 +25,16 @@ public class EliteShop {
 		egg.setItemMeta(eggMeta);
 		eliteShop.setItem(0, egg);
 		
+		// Health Booster for $2,000
+		ItemStack health = new ItemStack(Material.RED_MUSHROOM);
+		ItemMeta healthMeta = health.getItemMeta();
+		ArrayList<String> healthLore = new ArrayList<String>();
+		healthLore.add(ChatColor.WHITE + "Price: $2,000.00");
+		healthMeta.setDisplayName("Health Boost");
+		healthMeta.setLore(healthLore);
+		health.setItemMeta(healthMeta);
+		eliteShop.setItem(1, health);
+		
 		// Stat Boost for $10,000 (this is permanent)
 		ItemStack button = new ItemStack(Material.STONE_BUTTON);
 		ItemMeta buttonMeta = button.getItemMeta();
@@ -35,15 +45,26 @@ public class EliteShop {
 		button.setItemMeta(buttonMeta);
 		eliteShop.setItem(2, button);
 		
-		// Health Booster for $2,000
-		ItemStack health = new ItemStack(Material.RED_MUSHROOM);
-		ItemMeta healthMeta = health.getItemMeta();
-		ArrayList<String> healthLore = new ArrayList<String>();
-		healthLore.add(ChatColor.WHITE + "Price: $2,000.00");
-		healthMeta.setDisplayName("Health Boost");
-		healthMeta.setLore(healthLore);
-		health.setItemMeta(healthMeta);
-		eliteShop.setItem(3, health);
+		// God Apple for $500
+		ItemStack godApple = new ItemStack(Material.GOLDEN_APPLE, 1, (short)1);
+		ItemMeta appleMeta = godApple.getItemMeta();
+		ArrayList<String> appleLore = new ArrayList<String>();
+		appleLore.add(ChatColor.WHITE + "Price: $500.00");
+		appleMeta.setDisplayName(ChatColor.GOLD + "God Apple");
+		appleMeta.setLore(appleLore);
+		godApple.setItemMeta(appleMeta);
+		eliteShop.setItem(3, godApple);
+		
+		// Baseball Bat for $1,500
+		ItemStack bat = new ItemStack(Material.STICK);
+		ItemMeta batMeta = bat.getItemMeta();
+		ArrayList<String> batLore = new ArrayList<String>();
+		batLore.add(ChatColor.WHITE + "Price: $1,500.00");
+		batMeta.setDisplayName(ChatColor.YELLOW + "Baseball Bat");
+		batMeta.setLore(batLore);
+		bat.setItemMeta(batMeta);
+		bat.addUnsafeEnchantment(new EnchantmentWrapper(19), 35);
+		eliteShop.setItem(4, bat);
 		
 		// Power Flower for $1,000
 		ItemStack flower = new ItemStack(Material.RED_ROSE);

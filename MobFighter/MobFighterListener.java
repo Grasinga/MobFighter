@@ -649,6 +649,16 @@ public class MobFighterListener implements Listener {
 					VaultEco.getEconomy().withdrawPlayer(player, 500);
 					player.getInventory().addItem(clicked);
 				}
+				else if(clicked.getType() == Material.RED_MUSHROOM)
+				{
+					if(VaultEco.getEconomy().getBalance(player) < 2000)
+					{
+						player.sendMessage(ChatColor.RED + "You do not have enough money!");
+						return;
+					}
+					VaultEco.getEconomy().withdrawPlayer(player, 2000);
+					player.getInventory().addItem(clicked);
+				}
 				else if(clicked.getType() == Material.STONE_BUTTON)
 				{
 					if(VaultEco.getEconomy().getBalance(player) < 10000)
@@ -659,14 +669,24 @@ public class MobFighterListener implements Listener {
 					VaultEco.getEconomy().withdrawPlayer(player, 10000);
 					player.getInventory().addItem(clicked);
 				}
-				else if(clicked.getType() == Material.RED_MUSHROOM)
+				else if(clicked.getType() == Material.GOLDEN_APPLE)
 				{
-					if(VaultEco.getEconomy().getBalance(player) < 2000)
+					if(VaultEco.getEconomy().getBalance(player) < 500)
 					{
 						player.sendMessage(ChatColor.RED + "You do not have enough money!");
 						return;
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 2000);
+					VaultEco.getEconomy().withdrawPlayer(player, 500);
+					player.getInventory().addItem(clicked);
+				}
+				else if(clicked.getType() == Material.STICK)
+				{
+					if(VaultEco.getEconomy().getBalance(player) < 1500)
+					{
+						player.sendMessage(ChatColor.RED + "You do not have enough money!");
+						return;
+					}
+					VaultEco.getEconomy().withdrawPlayer(player, 1500);
 					player.getInventory().addItem(clicked);
 				}
 				else if(clicked.getType() == Material.RED_ROSE)
