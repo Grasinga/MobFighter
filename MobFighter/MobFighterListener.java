@@ -10,7 +10,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -186,16 +185,6 @@ public class MobFighterListener implements Listener {
 			}
 		}
 		
-		// Pet Wolf spawn
-		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
-		{
-			if(player.getItemInHand().getType().equals(Material.MONSTER_EGG)){
-				if(player.getItemInHand().getDurability() == EntityType.WOLF.getTypeId())
-					player.getWorld().spawnEntity(player.getLocation(), EntityType.WOLF);
-				player.setItemInHand(new ItemStack(Material.AIR));
-			}
-		}
-		
 		// Health Boost, Stat Boost, and Crafting 
 		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
 			if(player.getItemInHand().getType().equals(Material.RED_MUSHROOM))
@@ -203,12 +192,17 @@ public class MobFighterListener implements Listener {
 				int amount = player.getItemInHand().getAmount();
 				player.setItemInHand(new ItemStack(Material.AIR));
 				player.setHealthScale(player.getHealthScale() + 4 * amount);
-				if(player.getHealthScale() > 40) // Refunds the money spent buying it if the player has used 5 already.
+				while(amount > 0) // Refunds the money spent buying it if the player has used 5 already.
 				{
-					player.setHealthScale(40);
-					player.sendMessage(ChatColor.RED + "Your health is already boosted to the max!");
-					VaultEco.getEconomy().depositPlayer(player, 2000);
-					player.sendMessage(ChatColor.GREEN + "Refunded: $2,000.00");
+					if(player.getHealthScale() > 40){
+						player.setHealthScale(40);
+						player.sendMessage(ChatColor.RED + "Your health is already boosted to the max!");
+						VaultEco.getEconomy().depositPlayer(player, 2000);
+						player.sendMessage(ChatColor.GREEN + "Refunded: $2,000.00");
+					}
+					else
+						player.setHealthScale(player.getHealthScale() + 4);
+					amount--;
 				}
 				if(player.getHealthScale() > 20) // Sets scale in config and then reloads to apply.
 				{
@@ -719,7 +713,7 @@ public class MobFighterListener implements Listener {
 	
 	// No building allowed on server.
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlaceBlock(BlockPlaceEvent event){
+	public void onBlockPlace(BlockPlaceEvent event){
 		Player player = event.getPlayer();
 		
 		// Building allowed if the player has creative immunity.
@@ -732,7 +726,7 @@ public class MobFighterListener implements Listener {
 	
 	// No block breaking allowed on server.
 		@EventHandler(priority = EventPriority.NORMAL)
-		public void onPlaceBreak(BlockBreakEvent event){
+		public void onBlockBreak(BlockBreakEvent event){
 			Player player = event.getPlayer();
 			
 			// Block breaking allowed if the player has creative immunity.
@@ -800,7 +794,7 @@ public class MobFighterListener implements Listener {
 																	return;
 															// Sets the player back to survival once the anvil is used.
 															e.getWhoClicked().getOpenInventory().close();
-															player.setGameMode(GameMode.ADVENTURE);
+															player.setGameMode(GameMode.SURVIVAL);
 														}
 													}, 20*2);
 												}// End of creative combine.	

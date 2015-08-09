@@ -27,6 +27,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -66,6 +67,7 @@ public class SpecialEventsListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void playerClick(PlayerInteractEvent event){
 		Player player = event.getPlayer();
+		
 		if(SpecialEvents.flowers)
 			if(event.getAction() == Action.LEFT_CLICK_BLOCK)
 				if(player.getItemInHand().getType().equals(Material.DIAMOND_SPADE))
@@ -94,7 +96,29 @@ public class SpecialEventsListener implements Listener{
 							return;
 					}
 				}
+		
+		// Takes on TNT from player.
+		if(event.getAction() == Action.RIGHT_CLICK_BLOCK)
+			if(player.getItemInHand().getType().equals(Material.TNT)){
+				int tntAmount = player.getItemInHand().getAmount();
+				int index = player.getInventory().getHeldItemSlot();
+				ItemStack updated = new ItemStack(Material.TNT,(tntAmount-1));
+				player.getInventory().setItem(index, updated);
+				player.updateInventory();
+				}
 	}// End of playerClick()
+
+	// Handles lighting TNT
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onTNTPlace(BlockPlaceEvent event){
+		Block block = event.getBlock();
+		if(block.getType().equals(Material.TNT)){
+			Location loc = block.getLocation();
+			block.setType(Material.AIR);
+			Entity tnt = block.getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
+			((TNTPrimed)tnt).setFuseTicks(30);
+		}
+	}
 	
 	// Handles events that deal with picking up items. (Lightning, Explosive, and Field of Flowers)
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -130,9 +154,9 @@ public class SpecialEventsListener implements Listener{
 		// For explosive drops event.
 		if(SpecialEvents.explosive)
 		{
-			int x = (player.getLocation().getBlockX() + ((int)(Math.random()*11)));
+			int x = (player.getLocation().getBlockX() + ((int)(Math.random()*20)));
 			int y = player.getLocation().getBlockY();
-			int z = (player.getLocation().getBlockZ() + ((int)(Math.random()*11)));
+			int z = (player.getLocation().getBlockZ() + ((int)(Math.random()*20)));
 			Location strike = new Location(world, x, y, z);
 			Entity tnt = world.spawnEntity(strike, EntityType.PRIMED_TNT);
 			((TNTPrimed)tnt).setFuseTicks(0);
@@ -248,7 +272,6 @@ public class SpecialEventsListener implements Listener{
 			else
 				return;
 		}
-		
 	}
 	
 	
@@ -257,6 +280,14 @@ public class SpecialEventsListener implements Listener{
 	public void onDeath(EntityDeathEvent event){
 		
 		World world = event.getEntity().getWorld();
+		
+		if(SpecialEvents.explosive){
+			if(event.getEntity().getLastDamageCause().getCause().toString().equalsIgnoreCase("ENTITY_EXPLOSION")){
+				event.getDrops().clear();
+				ItemStack tnt = new ItemStack(Material.TNT);
+				event.getDrops().add(tnt);
+			}
+		}
 		
 		// For enderdragon event.
 		if(event.getEntity() instanceof EnderDragon)

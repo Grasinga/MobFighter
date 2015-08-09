@@ -75,7 +75,7 @@ public class SpecialEvents{
 	
 	// Enderdragon event:
 	private void eventEnderdragon(){
-		Location spawnLoc = new Location(world,world.getSpawnLocation().getX(),(world.getSpawnLocation().getY() + 100),world.getSpawnLocation().getZ());
+		Location spawnLoc = new Location(world,world.getSpawnLocation().getX(),(world.getSpawnLocation().getY() + 35),world.getSpawnLocation().getZ());
 		Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + (ChatColor.BOLD + "The Ender Dragon has Appeared!"));
 		world.spawnEntity(spawnLoc, EntityType.ENDER_DRAGON);
 	}
