@@ -185,17 +185,19 @@ public class SpecialEventsListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void playerItemDrop(PlayerDropItemEvent event)
 	{
-		ItemStack potato = new ItemStack(Material.POISONOUS_POTATO);
-		if(event.getItemDrop().getItemStack().equals(potato))
-		{
-			final Player player = event.getPlayer();
-			Location loc = player.getLocation();
-			player.getWorld().strikeLightning(loc);
-			event.setCancelled(true);
-			Bukkit.broadcastMessage(player.getDisplayName() + " you shall not throw the potato.");
-			player.setHealth(0);
-		}
-	}
+		if(SpecialEvents.potato){
+			ItemStack potato = new ItemStack(Material.POISONOUS_POTATO);
+			if(event.getItemDrop().getItemStack().equals(potato)){
+				final Player player = event.getPlayer();
+				Location loc = player.getLocation();
+				player.getWorld().strikeLightning(loc);
+				event.setCancelled(true);
+				player.updateInventory();
+				Bukkit.broadcastMessage(player.getDisplayName() + " you shall not throw the potato.");
+				player.setHealth(0);
+			}// End of check if potato.
+		}// End of potato event check.
+	}// End of playerItemDrop().
 	
 	// Deals with monster spawns for special events. (Field of Flowers, and Corrupted Wolf Pack)
 	@EventHandler(priority = EventPriority.NORMAL)

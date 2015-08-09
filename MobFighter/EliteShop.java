@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 // Elite shop for MobFighter
 public class EliteShop {
-	public static Inventory eliteShop = Bukkit.createInventory(null, 9, ChatColor.AQUA + "MobFighter - Elite Shop");
+	public static Inventory eliteShop = Bukkit.createInventory(null, 9, "Elite Shop");
 	static
 	{		
 		// Pet Egg for $500
@@ -56,7 +56,7 @@ public class EliteShop {
 		eliteShop.setItem(3, godApple);
 		
 		// Baseball Bat for $1,500
-		ItemStack bat = new ItemStack(Material.STICK);
+		ItemStack bat = new ItemStack(Material.BLAZE_ROD);
 		ItemMeta batMeta = bat.getItemMeta();
 		ArrayList<String> batLore = new ArrayList<String>();
 		batLore.add(ChatColor.WHITE + "Price: $1,500.00");

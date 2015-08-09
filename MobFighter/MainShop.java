@@ -14,8 +14,8 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 // Main shop for MobFighter
-public class ShopMenu {
-	public static Inventory shopInv = Bukkit.createInventory(null, 54, ChatColor.BLUE + "MobFighter - Shop");
+public class MainShop {
+	public static Inventory shopInv = Bukkit.createInventory(null, 54, "Main Shop");
 	static
 	{
 		// Item just used for getting meta data to preset prices.
@@ -111,7 +111,7 @@ public class ShopMenu {
 		tenThousandLore.add(ChatColor.WHITE + "Price: $10,000.00");
 		tenThousand.setLore(tenThousandLore);
 		
-		// Wooden sword for $5
+		// Stone sword for $10
 		stoneSword.setItemMeta(ten);
 		shopInv.setItem(0, stoneSword);
 		
@@ -140,7 +140,7 @@ public class ShopMenu {
 		bow.setItemMeta(ten);
 		shopInv.setItem(45, bow);
 		
-		// Gold Sword for $10
+		// Gold Sword for $5
 		ItemStack goldSword = new ItemStack(Material.GOLD_SWORD);
 		goldSword.setItemMeta(five);
 		shopInv.setItem(1, goldSword);
@@ -262,9 +262,9 @@ public class ShopMenu {
 		anvilBook.setItemMeta(bm2);
 		shopInv.setItem(7, anvilBook);
 		
-		// Book for $100
+		// Book for $50
 		ItemStack book = new ItemStack(Material.BOOK);
-		book.setItemMeta(hundred);
+		book.setItemMeta(fifty);
 		shopInv.setItem(24, book);
 		
 		// 10 ExpBottles for $100 

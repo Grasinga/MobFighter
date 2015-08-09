@@ -377,8 +377,9 @@ public class MobFighterCommands implements CommandExecutor {
 				// Command arguments lead to demon path:
 				if(!(args.length<=0)&&(!(args.length>=2))&&args[0].equalsIgnoreCase("demon"))
 				{
-					ItemStack coal = new ItemStack(Material.COAL);
+					ItemStack coal = new ItemStack(Material.COAL, 64);
 					coal.setItemMeta(SpecialEventsListener.undeadHeart.getItemMeta());
+					
 					ItemStack fCharge = new ItemStack(Material.FIREWORK_CHARGE);
 					ItemMeta meta = fCharge.getItemMeta();
 					meta.setDisplayName(ChatColor.DARK_PURPLE + "Festering Darkness");
@@ -387,8 +388,9 @@ public class MobFighterCommands implements CommandExecutor {
 					// Get item needed by trading in coal (undeadHearts).
 					if(player.getInventory().containsAtLeast(coal, 1728))
 					{
-						player.getInventory().clear();
+						player.getInventory().remove(coal);
 						player.getInventory().addItem(fCharge);
+						player.updateInventory();
 					}
 					
 					// Get the armor set if there are five Festering Darkness in the player's inventory.
@@ -453,8 +455,9 @@ public class MobFighterCommands implements CommandExecutor {
 				else if(!(args.length<=0)&&(!(args.length>=2))&&args[0].equalsIgnoreCase("sage"))
 				{
 					// Sets meta data for Tainted Souls and Swirling Souls
-					ItemStack emerald = new ItemStack(Material.EMERALD);
+					ItemStack emerald = new ItemStack(Material.EMERALD, 64);
 					emerald.setItemMeta(SpecialEventsListener.taintedSoul.getItemMeta());
+					
 					ItemStack star = new ItemStack(Material.NETHER_STAR);
 					ItemMeta meta = star.getItemMeta();
 					meta.setDisplayName(ChatColor.GREEN + "Swirling Souls");
@@ -463,8 +466,9 @@ public class MobFighterCommands implements CommandExecutor {
 					// Get the item needed by trading in emeralds (taintedSouls).
 					if(player.getInventory().containsAtLeast(emerald, 1728))
 					{
-						player.getInventory().clear();
+						player.getInventory().remove(emerald);
 						player.getInventory().addItem(star);
+						player.updateInventory();
 					}
 					
 					// Gets the armor set if there are 5 Swirling Souls in the players inventory.
