@@ -294,440 +294,445 @@ public class MobFighterListener implements Listener {
 		{
 			ItemStack clicked = event.getCurrentItem();
 			Inventory inventory = event.getInventory();
-			if(inventory.getName().equals(ShopMenu.shopName()))
+			
+			// Makes sure items clicked on are in the shops.
+			if(!(event.getClickedInventory().getName().toString().equalsIgnoreCase("container.inventory")))
 			{
-				// Items can't be taken from the shop.
-				event.setCancelled(true);
-				
-				if(clicked.getType() == Material.STONE_SWORD)
+				if(inventory.getName().equals(ShopMenu.shopName()))
 				{
-					if(VaultEco.getEconomy().getBalance(player) < 10)
+					// Items can't be taken from the shop.
+					event.setCancelled(true);
+					
+					if(clicked.getType() == Material.STONE_SWORD)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 10)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 10);
+						player.getInventory().addItem(new ItemStack(Material.STONE_SWORD));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 10);
-					player.getInventory().addItem(new ItemStack(Material.STONE_SWORD));
-				}
-				else if(clicked.getType() == Material.LEATHER_HELMET)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 5)
+					else if(clicked.getType() == Material.LEATHER_HELMET)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 5)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 5);
+						player.getInventory().addItem(new ItemStack(Material.LEATHER_HELMET));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 5);
-					player.getInventory().addItem(new ItemStack(Material.LEATHER_HELMET));
-				}
-				else if(clicked.getType() == Material.LEATHER_CHESTPLATE)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 10)
+					else if(clicked.getType() == Material.LEATHER_CHESTPLATE)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 10)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 10);
+						player.getInventory().addItem(new ItemStack(Material.LEATHER_CHESTPLATE));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 10);
-					player.getInventory().addItem(new ItemStack(Material.LEATHER_CHESTPLATE));
-				}
-				else if(clicked.getType() == Material.LEATHER_LEGGINGS)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 10)
+					else if(clicked.getType() == Material.LEATHER_LEGGINGS)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 10)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 10);
+						player.getInventory().addItem(new ItemStack(Material.LEATHER_LEGGINGS));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 10);
-					player.getInventory().addItem(new ItemStack(Material.LEATHER_LEGGINGS));
-				}
-				else if(clicked.getType() == Material.LEATHER_BOOTS)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 5)
+					else if(clicked.getType() == Material.LEATHER_BOOTS)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 5)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 5);
+						player.getInventory().addItem(new ItemStack(Material.LEATHER_BOOTS));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 5);
-					player.getInventory().addItem(new ItemStack(Material.LEATHER_BOOTS));
-				}
-				else if(clicked.getType() == Material.BOW)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 10)
+					else if(clicked.getType() == Material.BOW)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 10)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 10);
+						player.getInventory().addItem(new ItemStack(Material.BOW));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 10);
-					player.getInventory().addItem(new ItemStack(Material.BOW));
-				}
-				else if(clicked.getType() == Material.GOLD_SWORD)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 5)
+					else if(clicked.getType() == Material.GOLD_SWORD)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 5)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 5);
+						player.getInventory().addItem(new ItemStack(Material.GOLD_SWORD));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 5);
-					player.getInventory().addItem(new ItemStack(Material.GOLD_SWORD));
-				}
-				else if(clicked.getType() == Material.GOLD_HELMET)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 10)
+					else if(clicked.getType() == Material.GOLD_HELMET)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 10)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 10);
+						player.getInventory().addItem(new ItemStack(Material.GOLD_HELMET));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 10);
-					player.getInventory().addItem(new ItemStack(Material.GOLD_HELMET));
-				}
-				else if(clicked.getType() == Material.GOLD_CHESTPLATE)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 15)
+					else if(clicked.getType() == Material.GOLD_CHESTPLATE)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 15)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 15);
+						player.getInventory().addItem(new ItemStack(Material.GOLD_CHESTPLATE));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 15);
-					player.getInventory().addItem(new ItemStack(Material.GOLD_CHESTPLATE));
-				}
-				else if(clicked.getType() == Material.GOLD_LEGGINGS)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 15)
+					else if(clicked.getType() == Material.GOLD_LEGGINGS)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 15)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 15);
+						player.getInventory().addItem(new ItemStack(Material.GOLD_LEGGINGS));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 15);
-					player.getInventory().addItem(new ItemStack(Material.GOLD_LEGGINGS));
-				}
-				else if(clicked.getType() == Material.GOLD_BOOTS)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 10)
+					else if(clicked.getType() == Material.GOLD_BOOTS)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 10)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 10);
+						player.getInventory().addItem(new ItemStack(Material.GOLD_BOOTS));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 10);
-					player.getInventory().addItem(new ItemStack(Material.GOLD_BOOTS));
-				}
-				else if(clicked.getType() == Material.ARROW)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 10)
+					else if(clicked.getType() == Material.ARROW)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 10)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 10);
+						player.getInventory().addItem(new ItemStack(Material.ARROW,16));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 10);
-					player.getInventory().addItem(new ItemStack(Material.ARROW,16));
-				}
-				else if(clicked.getType() == Material.IRON_SWORD)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 50)
+					else if(clicked.getType() == Material.IRON_SWORD)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 50)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 50);
+						player.getInventory().addItem(new ItemStack(Material.IRON_SWORD));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 50);
-					player.getInventory().addItem(new ItemStack(Material.IRON_SWORD));
-				}
-				else if(clicked.getType() == Material.IRON_HELMET)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 100)
+					else if(clicked.getType() == Material.IRON_HELMET)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 100)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 100);
+						player.getInventory().addItem(new ItemStack(Material.IRON_HELMET));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 100);
-					player.getInventory().addItem(new ItemStack(Material.IRON_HELMET));
-				}
-				else if(clicked.getType() == Material.IRON_CHESTPLATE)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 400)
+					else if(clicked.getType() == Material.IRON_CHESTPLATE)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 400)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 400);
+						player.getInventory().addItem(new ItemStack(Material.IRON_CHESTPLATE));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 400);
-					player.getInventory().addItem(new ItemStack(Material.IRON_CHESTPLATE));
-				}
-				else if(clicked.getType() == Material.IRON_LEGGINGS)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 300)
+					else if(clicked.getType() == Material.IRON_LEGGINGS)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 300)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 300);
+						player.getInventory().addItem(new ItemStack(Material.IRON_LEGGINGS));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 300);
-					player.getInventory().addItem(new ItemStack(Material.IRON_LEGGINGS));
-				}
-				else if(clicked.getType() == Material.IRON_BOOTS)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 100)
+					else if(clicked.getType() == Material.IRON_BOOTS)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 100)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 100);
+						player.getInventory().addItem(new ItemStack(Material.IRON_BOOTS));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 100);
-					player.getInventory().addItem(new ItemStack(Material.IRON_BOOTS));
-				}
-				else if(clicked.getType() == Material.COOKED_BEEF)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 10)
+					else if(clicked.getType() == Material.COOKED_BEEF)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 10)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 10);
+						player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF,8));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 10);
-					player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF,8));
-				}
-				else if(clicked.getType() == Material.DIAMOND_SWORD)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 100)
+					else if(clicked.getType() == Material.DIAMOND_SWORD)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 100)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 100);
+						player.getInventory().addItem(new ItemStack(Material.DIAMOND_SWORD));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 100);
-					player.getInventory().addItem(new ItemStack(Material.DIAMOND_SWORD));
-				}
-				else if(clicked.getType() == Material.DIAMOND_HELMET)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 300)
+					else if(clicked.getType() == Material.DIAMOND_HELMET)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 300)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 300);
+						player.getInventory().addItem(new ItemStack(Material.DIAMOND_HELMET));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 300);
-					player.getInventory().addItem(new ItemStack(Material.DIAMOND_HELMET));
-				}
-				else if(clicked.getType() == Material.DIAMOND_CHESTPLATE)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 2600)
+					else if(clicked.getType() == Material.DIAMOND_CHESTPLATE)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 2600)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 2600);
+						player.getInventory().addItem(new ItemStack(Material.DIAMOND_CHESTPLATE));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 2600);
-					player.getInventory().addItem(new ItemStack(Material.DIAMOND_CHESTPLATE));
-				}
-				else if(clicked.getType() == Material.DIAMOND_LEGGINGS)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 1000)
+					else if(clicked.getType() == Material.DIAMOND_LEGGINGS)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 1000)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 1000);
+						player.getInventory().addItem(new ItemStack(Material.DIAMOND_LEGGINGS));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 1000);
-					player.getInventory().addItem(new ItemStack(Material.DIAMOND_LEGGINGS));
-				}
-				else if(clicked.getType() == Material.DIAMOND_BOOTS)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 300)
+					else if(clicked.getType() == Material.DIAMOND_BOOTS)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 300)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 300);
+						player.getInventory().addItem(new ItemStack(Material.DIAMOND_BOOTS));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 300);
-					player.getInventory().addItem(new ItemStack(Material.DIAMOND_BOOTS));
-				}
-				else if(clicked.getType() == Material.APPLE)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 20)
+					else if(clicked.getType() == Material.APPLE)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 20)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 20);
+						player.getInventory().addItem(new ItemStack(Material.APPLE,10));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 20);
-					player.getInventory().addItem(new ItemStack(Material.APPLE,10));
-				}
-				else if(clicked.getType() == Material.BOOK)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 100)
+					else if(clicked.getType() == Material.BOOK)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 100)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 100);
+						player.getInventory().addItem(new ItemStack(Material.BOOK));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 100);
-					player.getInventory().addItem(new ItemStack(Material.BOOK));
-				}
-				else if(clicked.getType() == Material.EXP_BOTTLE)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 100)
+					else if(clicked.getType() == Material.EXP_BOTTLE)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 100)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 100);
+						player.getInventory().addItem(new ItemStack(Material.EXP_BOTTLE,10));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 100);
-					player.getInventory().addItem(new ItemStack(Material.EXP_BOTTLE,10));
-				}
-				else if(clicked.getType() == Material.LAPIS_BLOCK)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 50)
+					else if(clicked.getType() == Material.LAPIS_BLOCK)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 50)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 50);
+						player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 50);
-					player.getInventory().addItem(new ItemStack(Material.LAPIS_BLOCK));
-				}
-				else if(clicked.getType() == Material.GOLD_INGOT)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 100)
+					else if(clicked.getType() == Material.GOLD_INGOT)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 100)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 100);
+						player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT,10));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 100);
-					player.getInventory().addItem(new ItemStack(Material.GOLD_INGOT,10));
-				}
-				else if(clicked.getType() == Material.IRON_INGOT)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 1000)
+					else if(clicked.getType() == Material.IRON_INGOT)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 1000)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 1000);
+						player.getInventory().addItem(new ItemStack(Material.IRON_INGOT,10));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 1000);
-					player.getInventory().addItem(new ItemStack(Material.IRON_INGOT,10));
-				}
-				else if(clicked.getType() == Material.DIAMOND)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 2000)
+					else if(clicked.getType() == Material.DIAMOND)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 2000)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 2000);
+						player.getInventory().addItem(new ItemStack(Material.DIAMOND,10));
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 2000);
-					player.getInventory().addItem(new ItemStack(Material.DIAMOND,10));
-				}
-				else if(clicked.getType() == Material.BRICK)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 200)
+					else if(clicked.getType() == Material.BRICK)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 200)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 200);
+						player.getInventory().addItem(clicked);
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 200);
-					player.getInventory().addItem(clicked);
-				}
-				else if(clicked.getType() == Material.WORKBENCH)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 1000)
+					else if(clicked.getType() == Material.WORKBENCH)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 1000)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 1000);
+						player.getInventory().addItem(clicked);
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 1000);
-					player.getInventory().addItem(clicked);
-				}
-				else if(clicked.getType() == Material.POTION)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 20)
+					else if(clicked.getType() == Material.POTION)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 20)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 20);
+						player.getInventory().addItem(clicked);
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 20);
-					player.getInventory().addItem(clicked);
-				}
-				else if(clicked.getType() == Material.WRITTEN_BOOK)
-				{
-					player.getInventory().addItem(clicked);
-				}
-			}// End of main shop.
-			if(inventory.getName().equals(EliteShop.shopName()))
-			{
-				// No items can be taken from the elite shop.
-				event.setCancelled(true);
-
-				if(clicked.getType() == Material.MONSTER_EGG)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 500)
+					else if(clicked.getType() == Material.WRITTEN_BOOK)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						player.getInventory().addItem(clicked);
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 500);
-					player.getInventory().addItem(clicked);
-				}
-				else if(clicked.getType() == Material.RED_MUSHROOM)
+				}// End of main shop.
+				if(inventory.getName().equals(EliteShop.shopName()))
 				{
-					if(VaultEco.getEconomy().getBalance(player) < 2000)
+					// No items can be taken from the elite shop.
+					event.setCancelled(true);
+	
+					if(clicked.getType() == Material.MONSTER_EGG)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 500)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 500);
+						player.getInventory().addItem(clicked);
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 2000);
-					player.getInventory().addItem(clicked);
-				}
-				else if(clicked.getType() == Material.STONE_BUTTON)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 10000)
+					else if(clicked.getType() == Material.RED_MUSHROOM)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 2000)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 2000);
+						player.getInventory().addItem(clicked);
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 10000);
-					player.getInventory().addItem(clicked);
-				}
-				else if(clicked.getType() == Material.GOLDEN_APPLE)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 500)
+					else if(clicked.getType() == Material.STONE_BUTTON)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 10000)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 10000);
+						player.getInventory().addItem(clicked);
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 500);
-					player.getInventory().addItem(clicked);
-				}
-				else if(clicked.getType() == Material.STICK)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 1500)
+					else if(clicked.getType() == Material.GOLDEN_APPLE)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 500)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 500);
+						player.getInventory().addItem(clicked);
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 1500);
-					player.getInventory().addItem(clicked);
-				}
-				else if(clicked.getType() == Material.RED_ROSE)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 1000)
+					else if(clicked.getType() == Material.STICK)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 1500)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 1500);
+						player.getInventory().addItem(clicked);
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 1000);
-					player.getInventory().addItem(clicked);
-				}
-				else if(clicked.getType() == Material.NETHER_STAR)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 200000)
+					else if(clicked.getType() == Material.RED_ROSE)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 1000)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 1000);
+						player.getInventory().addItem(clicked);
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 200000);
-					ItemStack star = new ItemStack(Material.NETHER_STAR);
-					ItemMeta meta = star.getItemMeta();
-					meta.setDisplayName(ChatColor.GREEN + "Swirling Souls");
-					star.setItemMeta(meta);
-					player.getInventory().addItem(star);
-				}
-				else if(clicked.getType() == Material.FIREWORK_CHARGE)
-				{
-					if(VaultEco.getEconomy().getBalance(player) < 200000)
+					else if(clicked.getType() == Material.NETHER_STAR)
 					{
-						player.sendMessage(ChatColor.RED + "You do not have enough money!");
-						return;
+						if(VaultEco.getEconomy().getBalance(player) < 200000)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 200000);
+						ItemStack star = new ItemStack(Material.NETHER_STAR);
+						ItemMeta meta = star.getItemMeta();
+						meta.setDisplayName(ChatColor.GREEN + "Swirling Souls");
+						star.setItemMeta(meta);
+						player.getInventory().addItem(star);
 					}
-					VaultEco.getEconomy().withdrawPlayer(player, 200000);
-					ItemStack fCharge = new ItemStack(Material.FIREWORK_CHARGE);
-					ItemMeta meta = fCharge.getItemMeta();
-					meta.setDisplayName(ChatColor.DARK_PURPLE + "Festering Darkness");
-					fCharge.setItemMeta(meta);
-					player.getInventory().addItem(fCharge);
-				}
-			}// End of elite shop.
+					else if(clicked.getType() == Material.FIREWORK_CHARGE)
+					{
+						if(VaultEco.getEconomy().getBalance(player) < 200000)
+						{
+							player.sendMessage(ChatColor.RED + "You do not have enough money!");
+							return;
+						}
+						VaultEco.getEconomy().withdrawPlayer(player, 200000);
+						ItemStack fCharge = new ItemStack(Material.FIREWORK_CHARGE);
+						ItemMeta meta = fCharge.getItemMeta();
+						meta.setDisplayName(ChatColor.DARK_PURPLE + "Festering Darkness");
+						fCharge.setItemMeta(meta);
+						player.getInventory().addItem(fCharge);
+					}
+				}// End of elite shop.
+			}// End of inventory click check.
 		}// End of null check.
 	}// End of inventory click.
 	
