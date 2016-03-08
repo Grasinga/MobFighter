@@ -18,6 +18,9 @@ import org.bukkit.plugin.PluginManager;
 
 public class SpecialEvents{
 	
+	// Variable for plugin.
+	MobFighter mobfighter;
+	
 	// Variable to get the world the plugin is running on.
 	private World world;
 	
@@ -29,10 +32,9 @@ public class SpecialEvents{
 	public static boolean lightning = false;
 	public static boolean explosive = false;
 	public static boolean potato = false;
-	public static boolean giants = false;
-	public static int giantsKilled = 0;
 	public static boolean babyZombies = false;
 	public static boolean wolves = false;
+	private int wave = 0;
 	
 	// Constructor to get important variables.
 	public SpecialEvents(MobFighter mobfighter, PluginManager pm, World w){
@@ -41,6 +43,7 @@ public class SpecialEvents{
 		Listener specialListener = new SpecialEventsListener(mobfighter);
 		pm.registerEvents(specialListener, mobfighter);
 		
+		this.mobfighter = mobfighter;
 		world = w;
 	}
 	
@@ -53,8 +56,6 @@ public class SpecialEvents{
 			eventEnderdragon();
 		else if(event.equalsIgnoreCase("Wither"))
 			eventWither();
-		else if(event.equalsIgnoreCase("Field of Flowers"))
-			eventFlowers();
 		else if(event.equalsIgnoreCase("Lightning Storm"))
 			eventLightningDrops();
 		else if(event.equalsIgnoreCase("Explosive Drops"))
@@ -63,8 +64,6 @@ public class SpecialEvents{
 			eventHotPotato();
 		else if(event.equalsIgnoreCase("PvP On"))
 			eventPVP();
-		else if(event.equalsIgnoreCase("Giants"))
-			eventGiants();
 		else if(event.equalsIgnoreCase("Baby Zombie Swarm"))
 			eventBabyZombies();
 		else if(event.equalsIgnoreCase("Corrupted Wolf Pack"))
@@ -87,11 +86,6 @@ public class SpecialEvents{
 		Location spawnLoc = new Location(world,(world.getSpawnLocation().getX() - 20),(world.getSpawnLocation().getY() + 10),world.getSpawnLocation().getZ());
 		Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + (ChatColor.BOLD + "The Wither has Appeared!"));
 		world.spawnEntity(spawnLoc, EntityType.WITHER);
-	}
-	
-	// Field of Flowers event:
-	private void eventFlowers(){
-		flowers = true;
 	}
 	
 	// Lightning Drops event:
@@ -122,37 +116,81 @@ public class SpecialEvents{
 		world.setPVP(true);
 	}
 	
-	// Giant event:
-	private void eventGiants(){
-		giants = true;
-		Bukkit.broadcastMessage(ChatColor.DARK_RED + "The four Giants have risen!");
-		int x = 15;
-		int z = 15;
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w " + world.getName() + " deny-spawn Creeper, Witch, Skeleton, Spider, Slime, Enderman, Pig, Chicken, Sheep, Cow, Horse, Rabbit");
-		// First
-		Location loc1 = new Location(world,(world.getSpawnLocation().getX()-x),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-z));
-		world.spawnEntity(loc1, EntityType.GIANT);
-		// Second
-		Location loc2 = new Location(world,(world.getSpawnLocation().getX()+x),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-z));
-		world.spawnEntity(loc2, EntityType.GIANT);
-		// Third
-		Location loc3 = new Location(world,(world.getSpawnLocation().getX()+x),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+z));
-		world.spawnEntity(loc3, EntityType.GIANT);
-		// Fourth
-		Location loc4 = new Location(world,(world.getSpawnLocation().getX()-x),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+z));
-		world.spawnEntity(loc4, EntityType.GIANT);
-	}
-	
-	// Baby Zombie Swarm event:
+	// Baby Zombie Swarm event (5 waves; 1 wave every 30 seconds):
 	private void eventBabyZombies(){
 		
 		babyZombies = true;
 		
-		Bukkit.broadcastMessage(ChatColor.DARK_RED + "The Undead Horde has come!");
+		wave = 0;
+		
 		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w " + world.getName() + " deny-spawn Creeper, Witch, Skeleton, Spider, Slime, Enderman, Giant, Pig, Chicken, Sheep, Cow, Horse, Rabbit");
 		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"butcher");
-		Location a = new Location(world,(world.getSpawnLocation().getBlockX()-20),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-20));
-		Location b = new Location(world,(world.getSpawnLocation().getBlockX()+20),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-15));
+		
+		Bukkit.broadcastMessage(ChatColor.DARK_RED + "The Undead Horde has come!");
+		getZombieWave();
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable() {
+			public void run() {						
+				getZombieWave();
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable() {
+					public void run() {						
+						getZombieWave();
+						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable() {
+							public void run() {						
+								getZombieWave();
+								Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable() {
+									public void run() {		
+										getZombieWave();
+										Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Final Wave!");
+									}
+								}, 20*30);
+							}
+						}, 20*30);
+					}
+				}, 20*30);
+			}
+		}, 20*30);
+	}
+	
+	// Corrupt Wolf Pack event (5 waves; 1 wave every 20 seconds):
+	private void eventCorruptedWolves(){
+		
+		wolves = true;
+		
+		wave = 0;
+		
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w " + world.getName() + " deny-spawn Creeper, Witch, Skeleton, Zombie, Spider, Slime, Enderman, Giant, Pig, Chicken, Sheep, Cow, Horse, Rabbit");
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"butcher");
+		
+		Bukkit.broadcastMessage(ChatColor.WHITE + "The Corrupted Wolves have come!");
+		getWolfWave();
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable() {
+			public void run() {						
+				getWolfWave();
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable() {
+					public void run() {						
+						getWolfWave();
+						Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable() {
+							public void run() {						
+								getWolfWave();
+								Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable() {
+									public void run() {						
+										getWolfWave();
+										Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Final Wave!");
+									}
+								}, 20*20);
+							}
+						}, 20*20);
+					}
+				}, 20*20);
+			}
+		}, 20*20);
+	}
+	
+	public void getZombieWave(){
+		wave++;
+		Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Wave: " + wave);
+		Location a = new Location(world,(world.getSpawnLocation().getBlockX()-10),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-10));
+		Location b = new Location(world,(world.getSpawnLocation().getBlockX()+10),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-10));
 		int xMin = Math.min(a.getBlockX(),b.getBlockX());
 		int yMin = Math.min(a.getBlockY(),b.getBlockY());
 		int zMin = Math.min(a.getBlockZ(),b.getBlockZ());
@@ -169,16 +207,11 @@ public class SpecialEvents{
 				}
 	}
 	
-	// Corrupt Wolf Pack event:
-	private void eventCorruptedWolves(){
-		
-		wolves = true;
-		
-		Bukkit.broadcastMessage(ChatColor.WHITE + "The Corrupted Wolves have come!");
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w " + world.getName() + " deny-spawn Creeper, Witch, Skeleton, Zombie, Spider, Slime, Enderman, Giant, Pig, Chicken, Sheep, Cow, Horse, Rabbit");
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"butcher");
-		Location a = new Location(world,(world.getSpawnLocation().getBlockX()-20),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-20));
-		Location b = new Location(world,(world.getSpawnLocation().getBlockX()+20),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-10));
+	public void getWolfWave(){
+		wave++;
+		Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "Wave: " + wave);
+		Location a = new Location(world,(world.getSpawnLocation().getBlockX()-10),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-10));
+		Location b = new Location(world,(world.getSpawnLocation().getBlockX()+10),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-10));
 		int xMin = Math.min(a.getBlockX(),b.getBlockX());
 		int yMin = Math.min(a.getBlockY(),b.getBlockY());
 		int zMin = Math.min(a.getBlockZ(),b.getBlockZ());

@@ -5,18 +5,13 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.EnchantmentWrapper;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Giant;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -29,13 +24,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -44,68 +37,41 @@ import org.bukkit.potion.PotionEffectType;
 
 public class SpecialEventsListener implements Listener{
 	
-	private MobFighter mobfighter;
-	
-	private boolean initialFlowers = true;
-	
 	// Important variables to be used in other classes.
 	public static ItemStack taintedSoul = new ItemStack(Material.EMERALD);
 	public static ItemStack undeadHeart = new ItemStack(Material.COAL);
+	MobFighter mobfighter;
 	
-	public SpecialEventsListener(MobFighter p){
-		mobfighter = p;
-		
+	public SpecialEventsListener(MobFighter mf){
+		mobfighter = mf;
 		ItemMeta meta = taintedSoul.getItemMeta();
 		meta.setDisplayName(ChatColor.DARK_GREEN + "Tainted Soul");
 		taintedSoul.setItemMeta(meta);
 		ItemMeta meta2 = undeadHeart.getItemMeta();
 		meta2.setDisplayName(ChatColor.LIGHT_PURPLE + "Undead Heart");
 		undeadHeart.setItemMeta(meta2);
-	}
+	}// End of constructor
 	
-	// Handles getting the Power Flower from the Field of Flowers event.
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void playerClick(PlayerInteractEvent event){
-		Player player = event.getPlayer();
+		Player player = event.getPlayer();		
 		
-		if(SpecialEvents.flowers)
-			if(event.getAction() == Action.LEFT_CLICK_BLOCK)
-				if(player.getItemInHand().getType().equals(Material.DIAMOND_SPADE))
-				{
-				// Stop the swing, get the position of the spade, check if the block is the right type of flower, pop the flower and clears the spade.
-					event.setCancelled(true);
-					int index = player.getInventory().getHeldItemSlot();
-					Block block = event.getClickedBlock();
-					for(ItemStack s : block.getDrops()){
-						if(s.getType().equals(Material.RED_ROSE) && 
-								s.getDurability() == new ItemStack(Material.RED_ROSE).getDurability()){
-							block.breakNaturally();
-							player.getInventory().clear(index);
-							
-							// Give sage book if the correct flower was popped.
-							ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-							BookMeta bm = (BookMeta) book.getItemMeta();
-							bm.setPages(Arrays.asList("The Lords and other Dwellers of the Overworld have recognized you. They will be willing to give you more power if you can gather enough Tainted Souls."));
-							bm.setAuthor("Mob Fighter");
-							bm.setTitle("Sage Path");
-							book.setItemMeta(bm);
-							player.getInventory().addItem(book);
-							player.updateInventory();
-						}
-						else // Not the right type of flower.
-							return;
-					}
-				}
-		
-		// Takes on TNT from player.
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK)
 			if(player.getItemInHand().getType().equals(Material.TNT)){
+				
+				// Ignore if player is in Creative Immunity.
+				for(int i=0;i<mobfighter.getConfig().getList("Creative Immunity").size();i++)
+					if(player.getDisplayName().equalsIgnoreCase(mobfighter.getConfig().getList("Creative Immunity").get(i).toString()))
+						return;
+				
+				// Takes one TNT from player.
 				int tntAmount = player.getItemInHand().getAmount();
 				int index = player.getInventory().getHeldItemSlot();
 				ItemStack updated = new ItemStack(Material.TNT,(tntAmount-1));
 				player.getInventory().setItem(index, updated);
 				player.updateInventory();
-				}
+			}
 	}// End of playerClick()
 
 	// Handles lighting TNT
@@ -125,21 +91,6 @@ public class SpecialEventsListener implements Listener{
 	public void onPickUp(PlayerPickupItemEvent event){
 		final Player player = event.getPlayer();
 		World world = player.getWorld();
-		
-		// Special Flower:
-		if(SpecialEvents.flowers){
-			if(event.getItem().getItemStack().getType().equals(Material.RED_ROSE) && 
-					event.getItem().getItemStack().getDurability() == new ItemStack(Material.RED_ROSE).getDurability())
-			{
-				ItemStack flower = event.getItem().getItemStack();
-				ItemMeta itemMeta = flower.getItemMeta();
-				itemMeta.setDisplayName(ChatColor.DARK_PURPLE + "Power Flower");
-				flower.setItemMeta(itemMeta);
-				flower.addUnsafeEnchantment(new EnchantmentWrapper(16), 5);
-				flower.addUnsafeEnchantment(new EnchantmentWrapper(21), 5);
-				flower.addUnsafeEnchantment(new EnchantmentWrapper(19), 1);
-			}
-		}
 		
 		// For lightning drops event.
 		if(SpecialEvents.lightning)
@@ -164,6 +115,7 @@ public class SpecialEventsListener implements Listener{
 	}
 	
 	// Handles passing on the potato to another player in the hot potato special event.
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void hotPotatoTransfer(PlayerInteractEntityEvent event)
 	{
@@ -199,15 +151,10 @@ public class SpecialEventsListener implements Listener{
 		}// End of potato event check.
 	}// End of playerItemDrop().
 	
-	// Deals with monster spawns for special events. (Field of Flowers, and Corrupted Wolf Pack)
+	// Deals with monster spawns for special events. (Corrupted Wolf Pack)
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void spawningMobs(CreatureSpawnEvent event)
-	{
-		// Prevents creepers from spawning on the Field of Flowers special event.
-		if(event.getEntity() instanceof Creeper)
-			if(SpecialEvents.flowers)
-				event.setCancelled(true);
-		
+	{		
 		// Makes wolves target the nearest player on the Corrupt Wolf Pack special event.
 		if(event.getEntity() instanceof Wolf)
 		{
@@ -235,53 +182,14 @@ public class SpecialEventsListener implements Listener{
 			{
 				Zombie z = (Zombie)event.getEntity();
 				if(!(z.isBaby()))
-					((LivingEntity)z).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
+					((LivingEntity)z).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0));
 			}
-		
-		if(SpecialEvents.giants){
-			if(event.getEntity() instanceof Giant)
-			{
-				Giant g = (Giant)event.getEntity();
-				((LivingEntity)g).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE,1));
-			}
-		}
-	}
-	
-	// Makes the Giants teleport when damaged.
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onDamage(EntityDamageByEntityEvent event){
-		
-		if(SpecialEvents.giants){			
-			if(event.getEntity() instanceof Giant){
-				
-				// Do damage to attacker.
-				if(event.getDamager() instanceof Arrow)
-					((LivingEntity)((Arrow) event.getDamager()).getShooter()).damage(2);
-				else
-					((LivingEntity) event.getDamager()).damage(2);
-				
-				// Teleport a little ways away.
-				World world = event.getEntity().getWorld();				
-				int x = (event.getEntity().getLocation().getBlockX() + ((int)(Math.random()*10)));
-				int y = event.getEntity().getLocation().getBlockY();
-				int z = (event.getEntity().getLocation().getBlockZ() + ((int)(Math.random()*10)));
-				Location tp = new Location(world, x, y, z);
-				
-				// Make it look like the Giant launch towards its teleport.
-				doEffect(event.getEntity().getWorld(), event.getEntity().getLocation(), Effect.EXPLOSION_LARGE);
-				event.getEntity().teleport(tp);
-			}
-			else
-				return;
-		}
 	}
 	
 	
 	// Handles special event deaths.
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onDeath(EntityDeathEvent event){
-		
-		World world = event.getEntity().getWorld();
 		
 		if(SpecialEvents.explosive){
 			if(event.getEntity().getLastDamageCause().getCause().toString().equalsIgnoreCase("ENTITY_EXPLOSION")){
@@ -319,28 +227,6 @@ public class SpecialEventsListener implements Listener{
 			event.getDrops().add(item3);
 			event.getDrops().add(book);
 			event.setDroppedExp(200000);
-		}	
-		
-		// For giant event.
-		if(event.getEntity() instanceof Giant)
-		{
-			ItemStack item = new ItemStack(Material.DIAMOND_BLOCK);
-			event.getDrops().add(item);
-			event.setDroppedExp(10000);
-			SpecialEvents.giantsKilled++;
-			
-			Bukkit.broadcastMessage(ChatColor.RED + "Giants left this night: " + (4 - SpecialEvents.giantsKilled));
-			if(SpecialEvents.giantsKilled % 4 == 0){
-				Bukkit.broadcastMessage(ChatColor.GREEN + "Total Giants defeated: " + SpecialEvents.giantsKilled);
-				Bukkit.broadcastMessage(ChatColor.GOLD + "Now that all of the Giants have been defeated, it will become day in 10 seconds!");
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable() 
-				{
-					public void run() 
-					{
-						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"time "+ world.getName() +" day");
-					}
-				}, 20*10);	
-			}
 		}
 		
 		// For Zombie Swarm event.
@@ -394,128 +280,4 @@ public class SpecialEventsListener implements Listener{
 			}
 		}		
 	}
-	
-	// Used to load/unload the flowers on the world.
-		@SuppressWarnings("deprecation")
-		@EventHandler(priority = EventPriority.HIGHEST)
-		public void chunkLoad(ChunkLoadEvent event){
-			
-			World world = event.getWorld();
-			
-			// Flowers only spawn in once.
-			
-				if(SpecialEvents.flowers){
-					if(initialFlowers){
-						Bukkit.broadcastMessage(ChatColor.GREEN + "A field of flowers appears!");
-						
-						// Sets the positions to spawn in flowers.
-						Location a = new Location(world,(world.getSpawnLocation().getBlockX()-100),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-100));
-						Location b = new Location(world,(world.getSpawnLocation().getBlockX()+100),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+100));
-						int xMin = Math.min(a.getBlockX(),b.getBlockX());
-						int yMin = Math.min(a.getBlockY(),b.getBlockY());
-						int zMin = Math.min(a.getBlockZ(),b.getBlockZ());
-						int xMax = Math.max(a.getBlockX(),b.getBlockX());
-						int yMax = Math.max(a.getBlockY(),b.getBlockY());
-						int zMax = Math.max(a.getBlockZ(),b.getBlockZ());
-						
-						// Gets the spot to set the special flower.
-						int r = (int)(Math.random()*10000+1);
-						int sFlower = 0;
-						
-						for (int x = xMin; x<=xMax; x++)
-						{
-							for (int y = yMin; y<=yMax; y++)
-							{
-								for (int z = zMin; z<=zMax; z++)
-							    {
-									// Places a flower within the positions given. (Only if that block is air.)
-									Location blockLoc = new Location(world,(world.getBlockAt(x,y,z).getX()), (world.getBlockAt(x,y,z).getY()), (world.getBlockAt(x,y,z).getZ()));
-									if(blockLoc.getBlock().getType().equals(Material.AIR))
-										blockLoc.getBlock().setTypeIdAndData(38, (byte) 0x4, false);
-									sFlower++;
-									
-									// Checks to see if the spot the flower was just placed in needs to be replaced with a rose.
-									if(sFlower==r)
-									{
-										if(blockLoc.getBlock().getType().equals(Material.RED_ROSE))
-											blockLoc.getBlock().setTypeIdAndData(38, (byte) 0x0, false);
-									}
-							    }
-							}
-						}
-						
-						// Sets the positions to remove flowers near spawn.
-						Location c = new Location(world,(world.getSpawnLocation().getBlockX()-10),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-10));
-						Location d = new Location(world,(world.getSpawnLocation().getBlockX()+10),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+10));
-						int xMin2 = Math.min(c.getBlockX(),d.getBlockX());
-						int yMin2 = Math.min(c.getBlockY(),d.getBlockY());
-						int zMin2 = Math.min(c.getBlockZ(),d.getBlockZ());
-						int xMax2 = Math.max(c.getBlockX(),d.getBlockX());
-						int yMax2 = Math.max(c.getBlockY(),d.getBlockY());
-						int zMax2 = Math.max(c.getBlockZ(),d.getBlockZ());
-						for (int x = xMin2; x<=xMax2; x++)
-						{
-							for (int y = yMin2; y<=yMax2; y++)
-							{
-								for (int z = zMin2; z<=zMax2; z++)
-							    {
-									// Removes flowers around spawn using the above positions.
-									Location blockLoc = new Location(world,(world.getBlockAt(x,y,z).getX()), (world.getBlockAt(x,y,z).getY()), (world.getBlockAt(x,y,z).getZ()));
-									if(blockLoc.getBlock().getType().equals(Material.RED_ROSE))
-										blockLoc.getBlock().setType(Material.AIR);
-							    }
-							}
-						}
-						
-						// Gets rid of any flowers that dropped when they were being spawned in. (So there isn't lag from the drops.)
-						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"stoplag");
-						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"stoplag -c");
-						
-						initialFlowers = false;
-						
-					}// End of initialFlowers.
-					
-					// Ends event.
-					if(!MobFighter.isNight)
-					{
-						Location a = new Location(world,(world.getSpawnLocation().getBlockX()-150),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()-150));
-						Location b = new Location(world,(world.getSpawnLocation().getBlockX()+150),(world.getSpawnLocation().getY()),(world.getSpawnLocation().getZ()+150));
-						int xMin = Math.min(a.getBlockX(),b.getBlockX());
-						int yMin = Math.min(a.getBlockY(),b.getBlockY());
-						int zMin = Math.min(a.getBlockZ(),b.getBlockZ());
-						int xMax = Math.max(a.getBlockX(),b.getBlockX());
-						int yMax = Math.max(a.getBlockY(),b.getBlockY());
-						int zMax = Math.max(a.getBlockZ(),b.getBlockZ());
-						for (int x = xMin; x<=xMax; x++)
-						{
-							for (int y = yMin; y<=yMax; y++)
-							{
-								for (int z = zMin; z<=zMax; z++)
-							    {
-									Location blockLoc = new Location(world,(world.getBlockAt(x,y,z).getX()), (world.getBlockAt(x,y,z).getY()), (world.getBlockAt(x,y,z).getZ()));
-									if(blockLoc.getBlock().getType().equals(Material.RED_ROSE))
-										blockLoc.getBlock().setType(Material.AIR);
-							    }
-							}
-						}
-						
-						// Quick way to make sure this message only runs once.
-						if(!initialFlowers)
-							Bukkit.broadcastMessage(ChatColor.GREEN + "The flowers seem to have disappeared!");
-						
-						initialFlowers = true;
-						
-						SpecialEvents.flowers = false;
-						
-					}// End of night.
-					
-				}// End of flowers.			
-				
-		}// End of Chunk Load event.
-		
-		// Used for playing effects.
-		private void doEffect(World w, Location l, Effect e){
-			l.setY(l.getY() + 2);
-			w.playEffect(l, e, 1000);
-		}
 }

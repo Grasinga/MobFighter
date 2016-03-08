@@ -54,6 +54,7 @@ public class MobFighterCommands implements CommandExecutor {
 		numberOfPlayers = getNumberOfPlayers();
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		
 		// Commands for anyone (some have permissions).
@@ -63,9 +64,7 @@ public class MobFighterCommands implements CommandExecutor {
 				try
 				{
 					sender.sendMessage(ChatColor.GREEN + "Reloading MobFighter's configuration file . . .");
-					mobfighter.getConfig().set("Current Night", MobFighter.nights);
-					mobfighter.saveConfig();
-					mobfighter.reloadConfig();
+					mobfighter.reload();
 					sender.sendMessage(ChatColor.GREEN + "MobFighter's configuration file has been reloaded!");
 				}
 				catch(Exception e){sender.sendMessage(ChatColor.RED + "Error: " + e); return false;} // Fails to reload.
@@ -78,8 +77,7 @@ public class MobFighterCommands implements CommandExecutor {
 				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives add Player-Kills playerKillCount");
 				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives add Total_Kills totalKillCount");
 				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives add Health health");
-				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives add Money_Top dummy");
-				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives setDisplay list Money_Top");
+				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives setDisplay list Player-Kills");
 				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives setDisplay sidebar Total_Kills");
 				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives setDisplay belowName Health");
 				return true;
@@ -88,7 +86,7 @@ public class MobFighterCommands implements CommandExecutor {
 			// Displays the amount of nights that have passed.
 			else if(commandLabel.equalsIgnoreCase("night"))
 			{
-				sender.sendMessage(ChatColor.DARK_AQUA + ("Night: " + MobFighter.nights));
+				sender.sendMessage(ChatColor.DARK_AQUA + ("Night: " + mobfighter.getConfig().getInt("Current Night")));
 				return true;
 			}			
 
@@ -101,10 +99,8 @@ public class MobFighterCommands implements CommandExecutor {
 				}				
 				if(Integer.parseInt(args[0]) >= 0 && Integer.parseInt(args[0]) <= 1000000){
 					
-					MobFighter.nights = Integer.parseInt(args[0]);
 					mobfighter.getConfig().set("Current Night", Integer.parseInt(args[0]));
 					mobfighter.saveConfig();
-					mobfighter.reloadConfig();
 					sender.sendMessage(ChatColor.BLUE + "Night set to: " + Integer.parseInt(args[0]));
 					return true;					
 				}
@@ -119,9 +115,11 @@ public class MobFighterCommands implements CommandExecutor {
 				if(!(args.length <= 0)){
 					try{Integer.parseInt(args[0]);}
 					// Was something other than a number trying to be parsed.
-					catch(Exception e){sender.sendMessage(ChatColor.RED + "Number has to be between positive!"); return false;}
-				}				
-				if(Integer.parseInt(args[0]) >= 1){
+					catch(Exception e){sender.sendMessage(ChatColor.RED + "Number has to be positive!"); return false;}
+				}
+				if(args.length <= 0)
+					sender.sendMessage(ChatColor.RED + "/eventnight <number> | Set how many nights pass before an event occurs.");
+				else if(Integer.parseInt(args[0]) >= 1){
 					
 					mobfighter.getConfig().set("Event Night", Integer.parseInt(args[0]));
 					mobfighter.saveConfig();
@@ -143,52 +141,53 @@ public class MobFighterCommands implements CommandExecutor {
 				// Didn't enter an event.
 				if(args.length <= 0){
 					sender.sendMessage(ChatColor.GOLD + "/setevent <event>");
-					sender.sendMessage(ChatColor.GOLD + "Events: Random, Enderdragon, Wither, FoF, LightningStorm, ExplosiveDrops, "
-							+ "HotPotato, PvP, Giants, ZombieSwarm, WolfPack");
+					sender.sendMessage(ChatColor.GOLD + "Events: Random, Enderdragon, Wither, LightningStorm, ExplosiveDrops, "
+							+ "HotPotato, PvP, ZombieSwarm, WolfPack");
 					return true;
 				}
 				if(args[0].equalsIgnoreCase("Enderdragon")){
 					MobFighter.eventPicker = 10;
-					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Event set to Enderdragon!");
+					server.getWorld(worldName).setTime(13700);
 				}
 				else if(args[0].equalsIgnoreCase("Wither")){
 					MobFighter.eventPicker = 25;
-					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
-				}
-				else if(args[0].equalsIgnoreCase("FoF")){
-					MobFighter.eventPicker = 35;
-					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Event set to Wither!");
+					server.getWorld(worldName).setTime(13700);
 				}
 				else if(args[0].equalsIgnoreCase("LightningStorm")){
 					MobFighter.eventPicker = 45;
-					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Event set to LightningStorm!");
+					server.getWorld(worldName).setTime(13700);
 				}
 				else if(args[0].equalsIgnoreCase("ExplosiveDrops")){
 					MobFighter.eventPicker = 55;
-					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Event set to ExplosiveDrops!");
+					server.getWorld(worldName).setTime(13700);
 				}
 				else if(args[0].equalsIgnoreCase("HotPotato")){
 					MobFighter.eventPicker = 62;
-					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Event set to HotPotato!");
+					server.getWorld(worldName).setTime(13700);
 				}
 				else if(args[0].equalsIgnoreCase("PvP")){
 					MobFighter.eventPicker = 70;
-					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
-				}
-				else if(args[0].equalsIgnoreCase("Giants")){
-					MobFighter.eventPicker = 88;
-					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Event set to PvP!");
+					server.getWorld(worldName).setTime(13700);
 				}
 				else if(args[0].equalsIgnoreCase("ZombieSwarm")){
 					MobFighter.eventPicker = 92;
-					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Event set to ZombieSwarm!");
+					server.getWorld(worldName).setTime(13700);
 				}
 				else if(args[0].equalsIgnoreCase("WolfPack")){
 					MobFighter.eventPicker = 98;
-					server.dispatchCommand(Bukkit.getConsoleSender(),"time " + worldName + " night");
+					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Event set to WolfPack!");
+					server.getWorld(worldName).setTime(13700);
 				}
 				else if(args[0].equalsIgnoreCase("Random")){
 					MobFighter.anyEvent = true;
+					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Event set to Random!");
 				}
 				else{
 					sender.sendMessage(ChatColor.GOLD + "/setevent <event>");
@@ -270,7 +269,7 @@ public class MobFighterCommands implements CommandExecutor {
 							
 					}
 					
-					// If /ready is used with more than one argument.
+					// If /ready is used with more than one argument. (/ready list handled above)
 					else if(args.length >= 1)
 					{
 							player.sendMessage("Please type: /ready or /ready list");
@@ -302,9 +301,9 @@ public class MobFighterCommands implements CommandExecutor {
 				ItemStack paper = new ItemStack(Material.PAPER);
 				ItemMeta paperMeta = paper.getItemMeta();
 				paperMeta.setDisplayName(ChatColor.BLUE + "Shop");
+				paperMeta.setLore(Arrays.asList(ChatColor.AQUA + "Right-click to open the shop!"));
 				paper.setItemMeta(paperMeta);
 				player.getInventory().addItem(paper);
-				player.sendMessage(ChatColor.BLUE + "Right-click the piece of paper to open the shop!");
 			}
 			
 			// Command to get the main shop.
@@ -328,8 +327,8 @@ public class MobFighterCommands implements CommandExecutor {
 					bm.setPages(Arrays.asList(
 							"Welcome to:\nMobFighter!\n\nThis server is a\nmob fighting game!\nYou kill mobs and\npick up their loot\nat night so you\ncan sell it\nduring the day to\nget better gear!\nAs you play you\nmay notice a\n",
 							"message saying \n\"Night: #\" this\nlets you know the\ncurrent night and\nhelps you prepare\nfor the events!\nEvents happen every\nfive waves varying\nfrom fighting the\nEnderdragon, to\nstrolling in a\nmeadow of flowers.\n",
-							"Commands:\n/getshop\n\n/ready : Toggles ready status!\n\n/ready list\n/night\n/craft\n/call <username>\n/bring <username>\n/exchange\n/getbook <name>",
-							"Emojies Spice up\nchat!\n\nType:\n/help mmemoji\n/help mmemoji 2\n/help mmemoji 3\n\nSee what emojies\nyou can use!\n\nThanks for reading!"));
+							"Commands:\n/getshop\n\n/ready\n(Toggles ready status!)\n\n/ready list\n/night\n/craft\n/call <username>\n/bring <username>\n/exchange\n/getbook <name>",
+							"See the full list of commands with /help\n\n Thanks for reading!"));
 					bm.setAuthor("Mob Fighter");
 					bm.setTitle("Mob Fighter Info");
 					book.setItemMeta(bm);
@@ -386,7 +385,7 @@ public class MobFighterCommands implements CommandExecutor {
 					fCharge.setItemMeta(meta);
 					
 					// Get item needed by trading in coal (undeadHearts).
-					if(player.getInventory().containsAtLeast(coal, 1728))
+					if(player.getInventory().containsAtLeast(coal, 320))
 					{
 						player.getInventory().remove(coal);
 						player.getInventory().addItem(fCharge);
@@ -398,6 +397,9 @@ public class MobFighterCommands implements CommandExecutor {
 					{
 						player.getInventory().clear();
 						ItemStack button = new ItemStack(Material.STONE_BUTTON);
+						ItemMeta buttonMeta = button.getItemMeta();
+						buttonMeta.setDisplayName(ChatColor.GREEN + "Stat Boost");
+						button.setItemMeta(buttonMeta);
 						ItemStack workbench = new ItemStack(Material.WORKBENCH);
 						ItemStack brick = new ItemStack(Material.BRICK);
 						ItemStack dh = new ItemStack(Material.DIAMOND_HELMET);
@@ -464,7 +466,7 @@ public class MobFighterCommands implements CommandExecutor {
 					star.setItemMeta(meta);
 					
 					// Get the item needed by trading in emeralds (taintedSouls).
-					if(player.getInventory().containsAtLeast(emerald, 1728))
+					if(player.getInventory().containsAtLeast(emerald, 320))
 					{
 						player.getInventory().remove(emerald);
 						player.getInventory().addItem(star);
@@ -476,6 +478,9 @@ public class MobFighterCommands implements CommandExecutor {
 					{
 						player.getInventory().clear();
 						ItemStack button = new ItemStack(Material.STONE_BUTTON);
+						ItemMeta buttonMeta = button.getItemMeta();
+						buttonMeta.setDisplayName(ChatColor.GREEN + "Stat Boost");
+						button.setItemMeta(buttonMeta);
 						ItemStack workbench = new ItemStack(Material.WORKBENCH);
 						ItemStack brick = new ItemStack(Material.BRICK);
 						ItemStack dh = new ItemStack(Material.DIAMOND_HELMET);
@@ -540,7 +545,7 @@ public class MobFighterCommands implements CommandExecutor {
 		
 		// Commands for console.
 		else if(sender instanceof ConsoleCommandSender){
-			log("No extra console commands right now.");
+			sender.sendMessage("No extra console commands right now.");
 			return false;
 		}
 		
@@ -568,7 +573,4 @@ public class MobFighterCommands implements CommandExecutor {
 				return true;
 		return false;
 	}
-	
-	// Simple log method for short handing.
-	private void log(String s){System.out.println(s);}
 }

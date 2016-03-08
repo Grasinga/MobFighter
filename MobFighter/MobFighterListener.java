@@ -1,6 +1,7 @@
 package net.grasinga.MobFighter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +20,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityCreatePortalEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -28,11 +28,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -43,17 +43,17 @@ import net.milkbowl.vault.economy.Economy;
 public class MobFighterListener implements Listener {
 	
 	// Variable for the plugin.
-	private JavaPlugin mobfighter = null;
+	private static JavaPlugin mobfighter = null;
 	
 	// Economy:
-	private static Economy econ = VaultEco.getEconomy();
+	public static Economy econ = VaultEco.getEconomy();
     
-    private Map<String, Object> sellingItems;
+    private static Map<String, Object> sellingItems;
     private Map<String, Object> shopItems;
 	
 	// Variables to help regenerate blocks during the day:
-	private ArrayList<BlockState> blockStates = new ArrayList<BlockState>();
-	private int fixBlockDelay = 0;
+	public static ArrayList<BlockState> blockStates = new ArrayList<BlockState>();
+	public static int fixBlockDelay = 0;
 	
 	// Constructor to pass in important variables.
 	public MobFighterListener(JavaPlugin p){
@@ -64,22 +64,22 @@ public class MobFighterListener implements Listener {
 	}
 	
 	// Gets the list of sellable items from the configuration file.
-	private void fillSellables() {
-		sellingItems = mobfighter.getConfig().getConfigurationSection("Selling Items").getValues(false);
+	public static void fillSellables() {
+		sellingItems = mobfighter.getConfig().getConfigurationSection("Sellable Items").getValues(false);
 	}
 	
-	// Boosts the player's health scale based on the configuration file's info.
-	@SuppressWarnings("deprecation")
+	// Boosts the player's health based on the configuration file's info.
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void logIn(PlayerLoginEvent e)
 	{
 		Player p = e.getPlayer();
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),"scoreboard players set " + p.getDisplayName() + " Money_Top " + (int) econ.getBalance(p.getDisplayName()));
 		try
 		{
-			p.setHealthScale(mobfighter.getConfig().getDouble("HealthScale." + p.getDisplayName()));
+			p.setMaxHealth(mobfighter.getConfig().getDouble("HealthBoost." + p.getDisplayName()));
+			return;
 		}
-		catch(Exception ex){return;}
+		// If the player isn't in the config file.
+		catch(Exception ex){p.resetMaxHealth();}
 	}
 	
 	// Gives a player who has joined for the first time the shop item.
@@ -111,93 +111,84 @@ public class MobFighterListener implements Listener {
 		ItemStack paper = new ItemStack(Material.PAPER);
 		ItemMeta paperMeta = paper.getItemMeta();
 		paperMeta.setDisplayName(ChatColor.BLUE + "Shop");
+		paperMeta.setLore(Arrays.asList(ChatColor.AQUA + "Right-click to open the shop!"));
 		paper.setItemMeta(paperMeta);
 		p.getInventory().addItem(paper);
-		p.sendMessage(ChatColor.BLUE + "Right-click the piece of paper to open the shop!");
+		ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+		BookMeta bm = (BookMeta) book.getItemMeta();
+		// Book Page Per Line
+		bm.setPages(Arrays.asList(
+				"Welcome to:\nMobFighter!\n\nThis server is a\nmob fighting game!\nYou kill mobs and\npick up their loot\nat night so you\ncan sell it\nduring the day to\nget better gear!\nAs you play you\nmay notice a\n",
+				"message saying \n\"Night: #\" this\nlets you know the\ncurrent night and\nhelps you prepare\nfor the events!\nEvents happen every\nfive waves varying\nfrom fighting the\nEnderdragon, to\nstrolling in a\nmeadow of flowers.\n",
+				"Commands:\n/getshop\n\n/ready\n(Toggles ready status!)\n\n/ready list\n/night\n/craft\n/call <username>\n/bring <username>\n/exchange\n/getbook <name>",
+				"See the full list of commands with /help\n\n Thanks for reading!"));
+		bm.setAuthor("Mob Fighter");
+		bm.setTitle("Mob Fighter Info");
+		book.setItemMeta(bm);
+		p.getInventory().addItem(book);
 	}
 	
-	// Sets the configuration file's info in regards to the player's health scale when they log off.
+	// Sets the configuration file's info in regards to the player's max health when they log off.
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void logOff(PlayerQuitEvent e)
 	{
 		Player p = e.getPlayer();
-		if(p.getHealthScale() > 20)
+		if(p.getMaxHealth() > 20)
 		{
-			mobfighter.getConfig().set("HealthScale." + p.getDisplayName(), p.getHealthScale());
+			mobfighter.getConfig().set("HealthBoost." + p.getDisplayName(), p.getMaxHealth());
 			mobfighter.saveConfig();
-			mobfighter.reloadConfig();
-		}
-	}
-	
-	// The magic behind the health boost. Reduces damage by 10% for each boost used. (All 5 = Half Damage)
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void playerHurt(EntityDamageEvent event){
-		if(event.getEntity() instanceof Player){
-			if(mobfighter.getConfig().getDouble("HealthScale." + ((Player) event.getEntity()).getDisplayName()) != 0)
-				if(mobfighter.getConfig().getDouble("HealthScale." + ((Player) event.getEntity()).getDisplayName()) == 24.0)
-					event.setDamage(event.getDamage() - (event.getDamage() / 6));
-				else if(mobfighter.getConfig().getDouble("HealthScale." + ((Player) event.getEntity()).getDisplayName()) == 28.0)
-					event.setDamage(event.getDamage() - (event.getDamage() / 5));
-				else if(mobfighter.getConfig().getDouble("HealthScale." + ((Player) event.getEntity()).getDisplayName()) == 32.0)
-					event.setDamage(event.getDamage() - (event.getDamage() / 4));
-				else if(mobfighter.getConfig().getDouble("HealthScale." + ((Player) event.getEntity()).getDisplayName()) == 36.0)
-					event.setDamage(event.getDamage() - (event.getDamage() / 3));
-				else if(mobfighter.getConfig().getDouble("HealthScale." + ((Player) event.getEntity()).getDisplayName()) == 40.0)
-					event.setDamage(event.getDamage() / 2);
 		}
 	}
 
 	// Handles multiple instances of player clicks.
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGH)
 	public void playerClick(PlayerInteractEvent event)
 	{
 		final Player player = event.getPlayer();
 		
-		// Creative mode switch
 		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
 		{
+			// Creative mode switch
 			if(player.getItemInHand().getType().equals(Material.BRICK))
 			{
-				for(int i=0;i<mobfighter.getConfig().getList("Creative Immunity").size();i++)
-					if(player.getDisplayName().equalsIgnoreCase(mobfighter.getConfig().getList("Creative Immunity").get(i).toString()))
-						return;
+				// Bypass switch and level loss.
+				if(mobfighter.getConfig().getList("Creative Immunity").contains(player.getDisplayName()))
+					return;
 				if(player.getLevel() >= 60)
 				{
 					player.setItemInHand(new ItemStack(Material.AIR));
+					player.setLevel(player.getLevel() - 60);
 					player.setGameMode(GameMode.CREATIVE);
 				}
 				else
 					player.sendMessage(ChatColor.RED + "You need to be at least level 60 to get creative!");
 			}
-		}
 		
-		// Health Boost, Stat Boost, and Crafting 
-		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
-			if(player.getItemInHand().getType().equals(Material.RED_MUSHROOM))
+			// Health Boost, Stat Boost, and Crafting 
+			if(player.getItemInHand().getType().equals(Material.RED_MUSHROOM) && player.getItemInHand().getItemMeta().hasDisplayName() && player.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_RED + "Health Boost"))
 			{
 				int amount = player.getItemInHand().getAmount();
 				player.setItemInHand(new ItemStack(Material.AIR));
-				player.setHealthScale(player.getHealthScale() + 4 * amount);
-				while(amount > 0) // Refunds the money spent buying it if the player has used 5 already.
+				while(amount > 0) // Add health and refunds the money spent buying it if the player has used 5 already.
 				{
-					if(player.getHealthScale() > 40){
-						player.setHealthScale(40);
+					if(player.getMaxHealth() >= 40){
+						player.setMaxHealth(40);
 						player.sendMessage(ChatColor.RED + "Your health is already boosted to the max!");
-						VaultEco.getEconomy().depositPlayer(player, 2000);
-						player.sendMessage(ChatColor.GREEN + "Refunded: $2,000.00");
+						VaultEco.getEconomy().depositPlayer(player, Double.parseDouble(EliteShop.shop.getString("RED_MUSHROOM")));
+						player.sendMessage(ChatColor.GREEN + "Refunded: $" + EliteShop.shop.getString("RED_MUSHROOM"));
 					}
 					else
-						player.setHealthScale(player.getHealthScale() + 4);
+						player.setMaxHealth(player.getMaxHealth() + 4);
 					amount--;
 				}
-				if(player.getHealthScale() > 20) // Sets scale in config and then reloads to apply.
+				if(player.getMaxHealth() > 20) // Sets max health in config and then reloads to apply.
 				{
-					mobfighter.getConfig().set("HealthScale." + player.getDisplayName(), player.getHealthScale());
+					mobfighter.getConfig().set("HealthBoost." + player.getDisplayName(), player.getMaxHealth());
 					mobfighter.saveConfig();
-					mobfighter.reloadConfig();
 				}
 			}
-			else if(player.getItemInHand().getType().equals(Material.STONE_BUTTON))
+			else if(player.getItemInHand().getType().equals(Material.STONE_BUTTON) && player.getItemInHand().getItemMeta().hasDisplayName() && player.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GREEN + "Stat Boost"))
 			{
 				player.setItemInHand(new ItemStack(Material.AIR));
 				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 0));
@@ -208,15 +199,12 @@ public class MobFighterListener implements Listener {
 			}
 			else if(player.getItemInHand().getType().equals(Material.WORKBENCH))
 			{
-				for(int i=0;i<mobfighter.getConfig().getList("Creative Immunity").size();i++)
-					if(player.getDisplayName().equalsIgnoreCase(mobfighter.getConfig().getList("Creative Immunity").get(i).toString()))
-						return;
+				if(mobfighter.getConfig().getList("Creative Immunity").contains(player.getDisplayName()))
+					return;
 				player.sendMessage(ChatColor.GRAY + "Type: /craft");
 			}
 		
-		// Get special items for end-game armor set.
-		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
-		{
+			// Get special items for end-game armor set.
 			if(player.getItemInHand().getType().equals(Material.SPONGE))
 			{
 				player.getInventory().clear();
@@ -232,8 +220,14 @@ public class MobFighterListener implements Listener {
 				}
 				player.updateInventory();
 			}
-		}
-		else if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)
+			
+			// Opens the main shop by right-clicking the shop paper.
+			if(player.getItemInHand().getType().equals(Material.PAPER))
+				player.openInventory(MainShop.getShop());
+		
+		}// End of Right-click
+		
+		if(event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)
 		{
 			if(player.getItemInHand().getType().equals(Material.SPONGE))
 			{
@@ -251,12 +245,6 @@ public class MobFighterListener implements Listener {
 				player.updateInventory();
 			}
 		}
-		
-		// Opens the main shop by right-clicking the shop paper.
-		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
-			if(player.getItemInHand().getType().equals(Material.PAPER))
-				player.openInventory(MainShop.getShop());
-		
 	}
 	
 	// Handles selling items with left-click.
@@ -303,13 +291,13 @@ public class MobFighterListener implements Listener {
 			boolean checks = false;
 			
 			if(event.getInventory().getName() != null)
-				if(!(event.getClickedInventory().getName().toString().equalsIgnoreCase("container.inventory"))){
+				if(!(event.getClickedInventory().getName().toString().equalsIgnoreCase("container.inventory")))
 					checks = itemChecker(event.getInventory().getName(), player, clicked);
-				}
 			
 			// Make sure items can't be take from the shop if the item clicked checks (is part of the shop).
 			if(checks)
 				event.setCancelled(true);
+			
 		}// End of null check.
 	}// End of inventory click.
 	
@@ -319,8 +307,7 @@ public class MobFighterListener implements Listener {
 		// Checks to make sure the shop exists.
 		if(mobfighter.getConfig().getConfigurationSection("Shops").isConfigurationSection(shop))	
 			shopItems = mobfighter.getConfig().getConfigurationSection("Shops").getConfigurationSection(shop).getValues(false);
-		else
-			return false;
+		else return false;
 		
 		double price = 0.0;
 		
@@ -336,12 +323,14 @@ public class MobFighterListener implements Listener {
 							return true;
 						}
 						VaultEco.getEconomy().withdrawPlayer(player, price);
-						ItemMeta clickedMeta = clickedItem.getItemMeta();
-						clickedMeta.setLore(null);
-						clickedItem.setItemMeta(clickedMeta);
-						player.getInventory().addItem(clickedItem);
+						ItemStack item = new ItemStack(clickedItem);
+						ItemMeta itemMeta = item.getItemMeta();
+						itemMeta.setLore(null);
+						item.setItemMeta(itemMeta);
+						player.getInventory().addItem(item);
 						player.updateInventory();
 					}
+		
 		return true;
 	}
 	
@@ -351,9 +340,8 @@ public class MobFighterListener implements Listener {
 		Player player = event.getPlayer();
 		
 		// Building allowed if the player has creative immunity.
-		for(int i=0;i<mobfighter.getConfig().getList("Creative Immunity").size();i++)
-			if(player.getDisplayName().equalsIgnoreCase(mobfighter.getConfig().getList("Creative Immunity").get(i).toString()))
-					return;
+		if(mobfighter.getConfig().getList("Creative Immunity").contains(player.getDisplayName()))
+				return;
 		
 		event.setCancelled(true);
 	}
@@ -364,9 +352,8 @@ public class MobFighterListener implements Listener {
 			Player player = event.getPlayer();
 			
 			// Block breaking allowed if the player has creative immunity.
-			for(int i=0;i<mobfighter.getConfig().getList("Creative Immunity").size();i++)
-				if(player.getDisplayName().equalsIgnoreCase(mobfighter.getConfig().getList("Creative Immunity").get(i).toString()))
-						return;
+			if(mobfighter.getConfig().getList("Creative Immunity").contains(player.getDisplayName()))
+					return;
 			
 			event.setCancelled(true);
 		}
@@ -423,9 +410,8 @@ public class MobFighterListener implements Listener {
 														public void run() 
 														{
 															// Bypass being set to survival after using anvil if the player has creative immunity.
-															for(int i=0;i<mobfighter.getConfig().getList("Creative Immunity").size();i++)
-																if(player.getDisplayName().equalsIgnoreCase(mobfighter.getConfig().getList("Creative Immunity").get(i).toString()))
-																	return;
+															if(mobfighter.getConfig().getList("Creative Immunity").contains(player.getDisplayName()))
+																return;
 															// Sets the player back to survival once the anvil is used.
 															e.getWhoClicked().getOpenInventory().close();
 															player.setGameMode(GameMode.SURVIVAL);
@@ -442,9 +428,8 @@ public class MobFighterListener implements Listener {
 					else
 					{
 						// Bypass having the player's inventory closed if they have creative immunity.
-						for(int i=0;i<mobfighter.getConfig().getList("Creative Immunity").size();i++)
-							if(player.getDisplayName().equalsIgnoreCase(mobfighter.getConfig().getList("Creative Immunity").get(i).toString()))
-								e.setCancelled(false);
+						if(mobfighter.getConfig().getList("Creative Immunity").contains(player.getDisplayName()))
+							return;
 						// Closes the player's inventory after the anvil is used.
 							else
 							{
@@ -497,26 +482,6 @@ public class MobFighterListener implements Listener {
 				event.getDrops().add(item);
 			}
 		}
-	}
-	
-	// Regenerates the blocks that were added to blockStates.
-	@EventHandler (priority = EventPriority.HIGH)
-	public void chunkLoad(ChunkLoadEvent event){
-		
-		// Only regenerates during the day.
-		if(!MobFighter.isNight)
-			for(int i=0;i<blockStates.size();i++)
-			{
-				final BlockState state = blockStates.get(i);
-					Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(mobfighter, new Runnable()
-					{
-						public void run()
-					{
-							state.update(true, false);
-						}
-					}, fixBlockDelay);
-				blockStates.remove(i);
-			}
 	}
 	
 	// Adds blown up blocks into blockStates.

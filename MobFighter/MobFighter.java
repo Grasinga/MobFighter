@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
@@ -32,9 +33,6 @@ public class MobFighter extends JavaPlugin {
 	
 	// Variable to keep track on how many nights have passed. (Includes the current night if it's night time.)
 	private int night = getConfig().getInt("Current Night");
-	
-	// Variable to use night in other classes.
-	public static int nights = 0;
 	
 	// Variable to keep track of when it first becomes day time. (true = just became day time) (false = has been day time or is night time)
 	private boolean startDay = true;
@@ -65,7 +63,7 @@ public class MobFighter extends JavaPlugin {
 		log("[MobFighter] Enabled!" 
 				+ "\n--------------------------------------------------"
 				+ "\nEthereal Network's MobFighter"
-				+ "\nMade by: Grasinga"
+				+ "\nCreated by: Grasinga"
 				+ "\n--------------------------------------------------");
 		
 		// Sets values for variables (VERY IMPORTANT TO SET HERE):
@@ -108,40 +106,33 @@ public class MobFighter extends JavaPlugin {
 		// Runs the Repeating Task that determines whether is it day or night. (Checks every Minecraft tick.)
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
         scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
-			@SuppressWarnings("deprecation")
 			public void run() {
 				
 				// Day Time --------------------------------------------------------------------------------------
 				
 				if(world.getTime() >= 0 && world.getTime() < 13700){
-					
-					// Make sure amount of nights match.
-					night = nights;
     				
 					// It's now day time.
 					isNight = false;
 					
 					// When the day first starts: change money to tab view, set players money on tab view, teleport players to spawn, and butcher all mobs.
 					if(startDay)
-            		{						
+            		{
 						// Gets the top player for Elite Shop
 						getConfig().set("Top Player", topPlayer());
 						saveConfig();
-						reloadConfig();
 						
 						// Clears ready list.
 						playerNames.removeAll();
 						
 						// Prevents Slimes and animals from spawning and resets global flags.
-						server.dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w "+ worldName + " deny-spawn Slime, Pig, Chicken, Sheep, Cow, Horse, Rabbit");
+						server.dispatchCommand(Bukkit.getConsoleSender(),"region flag __global__" + " -w "+ worldName + " deny-spawn Slime, Pig, Chicken, Sheep, Cow, Horse, Rabbit, Spider, Zombie, Skeleton, Enderman, Creeper, Witch");
 						
-        				server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives setDisplay list Money_Top");
             			Collection<? extends Player> list = Bukkit.getOnlinePlayers();
             			for(Player p : list)
-            			{
-        					server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard players set " + p.getDisplayName() + " Money_Top " + (int) VaultEco.getEconomy().getBalance(p.getDisplayName()));
-            				p.teleport(world.getSpawnLocation());
-            			}
+    							if(!(getConfig().getList("Creative Immunity").contains(p.getDisplayName())))								
+    								p.teleport(world.getSpawnLocation());
+            			
         				Bukkit.broadcastMessage(ChatColor.GOLD + "It's day time! Get prepared for the next night!");
         				server.dispatchCommand(Bukkit.getConsoleSender(),"butcher -a");
     					
@@ -181,15 +172,27 @@ public class MobFighter extends JavaPlugin {
         				SpecialEvents.wolves = false;
     					
     					// Resets the night counter to 0 after one million nights have passed.
-    					if(night > 1000000){
+    					if(night > 1000000)
     						night = 0;
-    						nights = 0;
-    					}    					
     					
     					// Alternates from day to night variable.
         				startNight = true;
         				startDay = false;
             		}// End of day start.
+					
+					// Repairs entity damage.
+					for(int i=0;i<MobFighterListener.blockStates.size();i++)
+					{
+						final BlockState state = MobFighterListener.blockStates.get(i);
+							Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Bukkit.getServer().getPluginManager().getPlugin("MobFighter"), new Runnable()
+							{
+								public void run()
+							{
+									state.update(true, false);
+								}
+							}, MobFighterListener.fixBlockDelay);
+							MobFighterListener.blockStates.remove(i);
+					}
 					
 					// Gives the players a heads up before it becomes night time.
 					if(!world.getPlayers().isEmpty())
@@ -202,9 +205,6 @@ public class MobFighter extends JavaPlugin {
 				
 				else if(world.getTime() > 13700 && world.getTime() < 22700){
 					
-					// Make sure amount of nights match.
-					night = nights;
-					
 					// It's now night time.
 					isNight = true;
 					
@@ -213,13 +213,10 @@ public class MobFighter extends JavaPlugin {
 					
 						// Makes sure a player cannot be in creative at night. (Unless they have immunity in the configuration file.)
 						Collection<? extends Player> list = Bukkit.getOnlinePlayers();
-	    				for(Player a : list)
-	    				{
-	    					if(a.getGameMode().equals(GameMode.CREATIVE))
-	    						for(int i=0;i<getConfig().getList("Creative Immunity").size();i++)
-	    							if(!(a.getDisplayName().equalsIgnoreCase(getConfig().getList("Creative Immunity").get(i).toString())))
-	    								a.setGameMode(GameMode.SURVIVAL);
-	    				}
+	    				for(Player p : list)
+	    					if(!(p.getGameMode().equals(GameMode.SURVIVAL)))
+    							if(!(getConfig().getList("Creative Immunity").contains(p.getDisplayName())))
+    								p.setGameMode(GameMode.SURVIVAL);
 	    				
 	    				// Stuff to run when the night begins:
 	    				if(startNight){
@@ -232,16 +229,14 @@ public class MobFighter extends JavaPlugin {
 							
 	    					// Increase the number of nights that have passed.
 	    					night++;
-	    					nights++;
 	    					
 	    					// Sets the tab view score to player kills
 	    					server.dispatchCommand(Bukkit.getConsoleSender(),"scoreboard objectives setDisplay list Player-Kills");
 	    					
 	    					// Teleports players to spawn.
-	        				for(Player a : list)
-	        				{
-	        					a.teleport(server.getWorld(worldName).getSpawnLocation());
-	        				}
+	        				for(Player p : list)
+    							if(!(getConfig().getList("Creative Immunity").contains(p.getDisplayName())))
+    								p.teleport(server.getWorld(worldName).getSpawnLocation());    								
 	        				
 	        				// Lets a player know the following: that it's night time, what night it is, and that spawn protection will only last 30 seconds.
 	        				Bukkit.broadcastMessage(ChatColor.BLUE + "It's night time! Go out and earn your keep!");
@@ -254,42 +249,36 @@ public class MobFighter extends JavaPlugin {
 	    					// Disables PvP during the night. (Can be enabled by PvP event.)
 	    					server.getWorld(worldName).setPVP(false);
 	        				
-	    					// Picks an event if the night is an evenNight.
+	    					// Picks an event if the night is an eventNight.
 	        				if(night%eventNight == 0){
 	        					
 	        					// The "random" event picker.
 	        					if(anyEvent)
 	        						eventPicker = (int)(Math.random()*100+1);
 	        					
-	        					// Enderdragon with 20% Chance
-	        					if(eventPicker>0 && eventPicker<20) {event.setEvent("Enderdragon");}
+	        					// Enderdragon with 10% Chance
+	        					if(eventPicker>0 && eventPicker<10) {event.setEvent("Enderdragon");}
 	        					
 	        					// Wither with 10% Chance
-	        					else if(eventPicker>20 && eventPicker<30){event.setEvent("Wither");}
+	        					else if(eventPicker>10 && eventPicker<20){event.setEvent("Wither");}
 	        					
-	        					// Field of Flowers with 10% Chance
-	        					else if(eventPicker>=30 && eventPicker<40){event.setEvent("Field of Flowers");}
+	        					// Lightning Storm 20% Chance
+	        					else if(eventPicker>=20 && eventPicker<40){event.setEvent("Lightning Storm");}
 	        					
-	        					// Lightning Storm 10% Chance
-	        					else if(eventPicker>=40 && eventPicker<50){event.setEvent("Lightning Storm");}
-	        					
-	        					// Explosive Drops 10% Chance
-	        					else if(eventPicker>=50 && eventPicker<60){event.setEvent("Explosive Drops");}
+	        					// Explosive Drops 20% Chance
+	        					else if(eventPicker>=40 && eventPicker<60){event.setEvent("Explosive Drops");}
 	        					
 	        					// Hot Potato 5% Chance
 	        					else if(eventPicker>=60 && eventPicker<65){event.setEvent("Hot Potato");}
 	        					
-	        					// PvP On 20% Chance
-	        					else if(eventPicker>=65 && eventPicker<85){event.setEvent("PvP On");}
+	        					// PvP On 15% Chance
+	        					else if(eventPicker>=65 && eventPicker<80){event.setEvent("PvP On");}
 	        					
-	        					// Giants 5% Chance
-	        					else if(eventPicker>=85 && eventPicker<90){event.setEvent("Giants");}
+	        					// Baby Zombie Swarm 10% Chance
+	        					else if(eventPicker>=80 && eventPicker<90){event.setEvent("Baby Zombie Swarm");}
 	        					
-	        					// Baby Zombie Swarm 5% Chance
-	        					else if(eventPicker>=90 && eventPicker<95){event.setEvent("Baby Zombie Swarm");}
-	        					
-	        					// Corrupted Wolf Pack 5% Chance
-	        					else if(eventPicker>=95 && eventPicker<=100){event.setEvent("Corrupted Wolf Pack");}
+	        					// Corrupted Wolf Pack 10% Chance
+	        					else if(eventPicker>=90 && eventPicker<=100){event.setEvent("Corrupted Wolf Pack");}
 	        					
 	        				}// End of eventNight
 	        				
@@ -303,8 +292,8 @@ public class MobFighter extends JavaPlugin {
 				
 				// ----------------- Anything that needs to be running whether it's day or night. ------------------------
 				
-				// This allows the /eventnight command to update and take.
 				eventNight = getConfig().getInt("Event Night");
+				night = getConfig().getInt("Current Night");
 				
 			}// End of Run
         }, 0L, 1L);// End of Repeating Task
@@ -315,8 +304,7 @@ public class MobFighter extends JavaPlugin {
 	public void onDisable() {
 		
 		// Save any changes to configuration file:
-		getConfig().set("Current Night", night);
-		saveConfig();
+		reload();
 		
 		log("[MobFighter] Disabled!");
 		
@@ -329,12 +317,11 @@ public class MobFighter extends JavaPlugin {
 			public void run() 
 			{
 				server.dispatchCommand(Bukkit.getConsoleSender(),"setboards");
-				server.dispatchCommand(Bukkit.getConsoleSender(),"gamerule keepInventory true");
+				world.setGameRuleValue("keepInventory", "true");
 			}
 		}, 20*5);
 		getConfig().set("Just Added", false);
 		saveConfig();
-		reloadConfig();
 	}
 	
 	// 30 Seconds of protection from monsters when the night begins.
@@ -367,6 +354,10 @@ public class MobFighter extends JavaPlugin {
 	@SuppressWarnings("deprecation")
 	private String topPlayer(){
 		Objective obj = Bukkit.getScoreboardManager().getMainScoreboard().getObjective("Total_Kills");
+		if(obj == null){
+			runStartVariables();
+			topPlayer();
+		}
 		String topPlayer = "";
 		
 		OfflinePlayer[] players = Bukkit.getOfflinePlayers();
@@ -411,7 +402,19 @@ public class MobFighter extends JavaPlugin {
 		else
 			topPlayer = playerOff.getName().toString();
 		
+		if(topPlayer == null)
+			return "";
+		
 		return topPlayer;
+	}
+	
+	// Function to reload the plugin config and get latest values needed.
+	public void reload(){
+		reloadConfig();
+		saveConfig();
+		eventNight = getConfig().getInt("Event Night");
+		night = getConfig().getInt("Current Night");
+		MobFighterListener.fillSellables();
 	}
 	
 	// Simple log method for short handing.

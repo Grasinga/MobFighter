@@ -1,316 +1,266 @@
 package net.grasinga.MobFighter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 
 // Main shop for MobFighter
 public class MainShop {
-	public static Inventory shopInv = Bukkit.createInventory(null, 54, "Main Shop");
+	private static Inventory shopInv = Bukkit.createInventory(null, 54, "Main Shop");
+	private static PluginManager pm = Bukkit.getServer().getPluginManager();
+	private static ConfigurationSection shop = pm.getPlugin("MobFighter").getConfig().getConfigurationSection("Shops").getConfigurationSection("Main Shop");
 	static
 	{
-		// Item just used for getting meta data to preset prices.
 		ItemStack stoneSword = new ItemStack(Material.STONE_SWORD);
-		
-		// $5 preset
-		ItemMeta five = stoneSword.getItemMeta();
-		ArrayList<String> fiveLore = new ArrayList<String>();
-		fiveLore.add(ChatColor.WHITE + "Price: $5.00");
-		five.setLore(fiveLore);
-		
-		// $10 preset 
-		ItemMeta ten = stoneSword.getItemMeta();
-		ArrayList<String> tenLore = new ArrayList<String>();
-		tenLore.add(ChatColor.WHITE + "Price: $10.00");
-		ten.setLore(tenLore);
-		
-		// $15 preset
-		ItemMeta fifteen = stoneSword.getItemMeta();
-		ArrayList<String> fifteenLore = new ArrayList<String>();
-		fifteenLore.add(ChatColor.WHITE + "Price: $15.00");
-		fifteen.setLore(fifteenLore);
-		
-		// $20 preset
-		ItemMeta twenty = stoneSword.getItemMeta();
-		ArrayList<String> twentyLore = new ArrayList<String>();
-		twentyLore.add(ChatColor.WHITE + "Price: $20.00");
-		twenty.setLore(twentyLore);
-	    
-		// $50 preset
-		ItemMeta fifty = stoneSword.getItemMeta();
-		ArrayList<String> fiftyLore = new ArrayList<String>();
-		fiftyLore.add(ChatColor.WHITE + "Price: $50.00");
-		fifty.setLore(fiftyLore);
-		
-		// $100 preset
-		ItemMeta hundred = stoneSword.getItemMeta();
-		ArrayList<String> hundredLore = new ArrayList<String>();
-		hundredLore.add(ChatColor.WHITE + "Price: $100.00");
-		hundred.setLore(hundredLore);
-		
-		// $150 preset
-		ItemMeta hundredFifty = stoneSword.getItemMeta();
-		ArrayList<String> hundredFiftyLore = new ArrayList<String>();
-		hundredFiftyLore.add(ChatColor.WHITE + "Price: $150.00");
-		hundredFifty.setLore(hundredFiftyLore);
-		
-		// $200 preset
-		ItemMeta twoHundred = stoneSword.getItemMeta();
-		ArrayList<String> twoHundredLore = new ArrayList<String>();
-		twoHundredLore.add(ChatColor.WHITE + "Price: $200.00");
-		twoHundred.setLore(twoHundredLore);
-		
-		// $300 preset
-		ItemMeta threeHundred = stoneSword.getItemMeta();
-		ArrayList<String> threeHundredLore = new ArrayList<String>();
-		threeHundredLore.add(ChatColor.WHITE + "Price: $300.00");
-		threeHundred.setLore(threeHundredLore);
-		
-		// $400 preset
-		ItemMeta fourHundred = stoneSword.getItemMeta();
-		ArrayList<String> fourHundredLore = new ArrayList<String>();
-		fourHundredLore.add(ChatColor.WHITE + "Price: $400.00");
-		fourHundred.setLore(fourHundredLore);
-		
-		// $800 preset
-		ItemMeta eightHundred = stoneSword.getItemMeta();
-		ArrayList<String> eightHundredLore = new ArrayList<String>();
-		eightHundredLore.add(ChatColor.WHITE + "Price: $800.00");
-		eightHundred.setLore(eightHundredLore);
-		
-		// $1,000 preset
-		ItemMeta oneThousand = stoneSword.getItemMeta();
-		ArrayList<String> oneThousandLore = new ArrayList<String>();
-		oneThousandLore.add(ChatColor.WHITE + "Price: $1,000.00");
-		oneThousand.setLore(oneThousandLore);
-		
-		// $2,000 preset
-		ItemMeta twoThousand = stoneSword.getItemMeta();
-		ArrayList<String> twoThousandLore = new ArrayList<String>();
-		twoThousandLore.add(ChatColor.WHITE + "Price: $2,000.00");
-		twoThousand.setLore(twoThousandLore);
-		
-		// $2,600 preset
-		ItemMeta twentySixHundred = stoneSword.getItemMeta();
-		ArrayList<String> twentySixHundredLore = new ArrayList<String>();
-		twentySixHundredLore.add(ChatColor.WHITE + "Price: $2,600.00");
-		twentySixHundred.setLore(twentySixHundredLore);
-		
-		// $10,000 preset
-		ItemMeta tenThousand = stoneSword.getItemMeta();
-		ArrayList<String> tenThousandLore = new ArrayList<String>();
-		tenThousandLore.add(ChatColor.WHITE + "Price: $10,000.00");
-		tenThousand.setLore(tenThousandLore);
-		
-		// Stone sword for $10
-		stoneSword.setItemMeta(ten);
+		ItemMeta stoneSwordMeta = stoneSword.getItemMeta();
+		stoneSwordMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("STONE_SWORD")));
+		stoneSword.setItemMeta(stoneSwordMeta);
 		shopInv.setItem(0, stoneSword);
 		
-		// Leather Helmet for $5
 		ItemStack leatherHat = new ItemStack(Material.LEATHER_HELMET);
-		leatherHat.setItemMeta(five);
+		ItemMeta leatherHatMeta = leatherHat.getItemMeta();
+		leatherHatMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("LEATHER_HELMET")));
+		leatherHat.setItemMeta(leatherHatMeta);
 		shopInv.setItem(9, leatherHat);
-		
-		// Leather Chestplate for $10		
-		ItemStack leatherChest = new ItemStack(Material.LEATHER_CHESTPLATE);		
-		leatherChest.setItemMeta(ten);
+	
+		ItemStack leatherChest = new ItemStack(Material.LEATHER_CHESTPLATE);
+		ItemMeta leatherChestMeta = leatherChest.getItemMeta();
+		leatherChestMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("LEATHER_CHESTPLATE")));
+		leatherChest.setItemMeta(leatherChestMeta);
 		shopInv.setItem(18, leatherChest);
-		
-		// Leather Leggings for $10
+
 		ItemStack leatherLegs = new ItemStack(Material.LEATHER_LEGGINGS);
-		leatherLegs.setItemMeta(ten);
+		ItemMeta leatherLegsMeta = leatherLegs.getItemMeta();
+		leatherLegsMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("LEATHER_LEGGINGS")));
+		leatherLegs.setItemMeta(leatherLegsMeta);
 		shopInv.setItem(27, leatherLegs);
-		
-		// Leather Boots for $5
+
 		ItemStack leatherBoots = new ItemStack(Material.LEATHER_BOOTS);
-		leatherBoots.setItemMeta(five);
+		ItemMeta leatherBootsMeta = leatherBoots.getItemMeta();
+		leatherBootsMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("LEATHER_BOOTS")));
+		leatherBoots.setItemMeta(leatherBootsMeta);
 		shopInv.setItem(36, leatherBoots);
-		
-		// Bow for $10
+
 		ItemStack bow = new ItemStack(Material.BOW);
-		bow.setItemMeta(ten);
+		ItemMeta bowMeta = bow.getItemMeta();
+		bowMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("BOW")));
+		bow.setItemMeta(bowMeta);
 		shopInv.setItem(45, bow);
-		
-		// Gold Sword for $5
+
 		ItemStack goldSword = new ItemStack(Material.GOLD_SWORD);
-		goldSword.setItemMeta(five);
+		ItemMeta goldSwordMeta = goldSword.getItemMeta();
+		goldSwordMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("GOLD_SWORD")));
+		goldSword.setItemMeta(goldSwordMeta);
 		shopInv.setItem(1, goldSword);
-		
-		// Gold Helmet for $10
+
 		ItemStack goldHat = new ItemStack(Material.GOLD_HELMET);
-		goldHat.setItemMeta(ten);
+		ItemMeta goldHatMeta = goldHat.getItemMeta();
+		goldHatMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("GOLD_HELMET")));
+		goldHat.setItemMeta(goldHatMeta);
 		shopInv.setItem(10, goldHat);
-		
-		// Gold Chestplate for $15
+
 		ItemStack goldChest = new ItemStack(Material.GOLD_CHESTPLATE);
-		goldChest.setItemMeta(fifteen);
+		ItemMeta goldChestMeta = goldChest.getItemMeta();
+		goldChestMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("GOLD_CHESTPLATE")));
+		goldChest.setItemMeta(goldChestMeta);
 		shopInv.setItem(19, goldChest);
-		
-		// Gold Leggings for $15
+
 		ItemStack goldLegs = new ItemStack(Material.GOLD_LEGGINGS);
-		goldLegs.setItemMeta(fifteen);
+		ItemMeta goldLegsMeta = goldLegs.getItemMeta();
+		goldLegsMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("GOLD_LEGGINGS")));
+		goldLegs.setItemMeta(goldLegsMeta);
 		shopInv.setItem(28, goldLegs);
-		
-		// Gold Boots for $10
+
 		ItemStack goldBoots = new ItemStack(Material.GOLD_BOOTS);
-		goldBoots.setItemMeta(ten);
+		ItemMeta goldBootsMeta = goldBoots.getItemMeta();
+		goldBootsMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("GOLD_BOOTS")));
+		goldBoots.setItemMeta(goldBootsMeta);
 		shopInv.setItem(37, goldBoots);
-		
-		// 16 Arrows for $10
+
 		ItemStack arrow = new ItemStack(Material.ARROW,16);
-		arrow.setItemMeta(ten);
+		ItemMeta arrowMeta = arrow.getItemMeta();
+		arrowMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("ARROW")));
+		arrow.setItemMeta(arrowMeta);
 		shopInv.setItem(46, arrow);
-		
-		// Iron Sword for $50
+
 		ItemStack ironSword = new ItemStack(Material.IRON_SWORD);
-		ironSword.setItemMeta(fifty);
+		ItemMeta ironSwordMeta = ironSword.getItemMeta();
+		ironSwordMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("IRON_SWORD")));
+		ironSword.setItemMeta(ironSwordMeta);
 		shopInv.setItem(2, ironSword);
-		
-		// Iron Helmet for $100
+
 		ItemStack ironHat = new ItemStack(Material.IRON_HELMET);
-		ironHat.setItemMeta(hundred);
+		ItemMeta ironHatMeta = ironHat.getItemMeta();
+		ironHatMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("IRON_HELMET")));
+		ironHat.setItemMeta(ironHatMeta);
 		shopInv.setItem(11, ironHat);
-		
-		// Iron Chestplate for $400
+
 		ItemStack ironChest = new ItemStack(Material.IRON_CHESTPLATE);
-		ironChest.setItemMeta(fourHundred);
+		ItemMeta ironChestMeta = ironChest.getItemMeta();
+		ironChestMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("IRON_CHESTPLATE")));
+		ironChest.setItemMeta(ironChestMeta);
 		shopInv.setItem(20, ironChest);
-		
-		// Iron Leggings for $300
+
 		ItemStack ironLegs = new ItemStack(Material.IRON_LEGGINGS);
-		ironLegs.setItemMeta(threeHundred);
+		ItemMeta ironLegsMeta = ironLegs.getItemMeta();
+		ironLegsMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("IRON_LEGGINGS")));
+		ironLegs.setItemMeta(ironLegsMeta);
 		shopInv.setItem(29, ironLegs);
-		
-		// Iron Boots for $100
+
 		ItemStack ironBoots = new ItemStack(Material.IRON_BOOTS);
-		ironBoots.setItemMeta(hundred);
+		ItemMeta ironBootsMeta = ironBoots.getItemMeta();
+		ironBootsMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("IRON_BOOTS")));
+		ironBoots.setItemMeta(ironBootsMeta);
 		shopInv.setItem(38, ironBoots);
-		
-		// 8 Beef for $10
+
 		ItemStack beef = new ItemStack(Material.COOKED_BEEF,8);
-		beef.setItemMeta(ten);
+		ItemMeta beefMeta = beef.getItemMeta();
+		beefMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("COOKED_BEEF")));
+		beef.setItemMeta(beefMeta);
 		shopInv.setItem(47, beef);
-		
-		// Diamond Sword for $100
+
 		ItemStack diamondSword = new ItemStack(Material.DIAMOND_SWORD);
-		diamondSword.setItemMeta(hundred);
+		ItemMeta diamondSwordMeta = diamondSword.getItemMeta();
+		diamondSwordMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("DIAMOND_SWORD")));
+		diamondSword.setItemMeta(diamondSwordMeta);
 		shopInv.setItem(3, diamondSword);
-		
-		// Diamond Helmet for $300
+
 		ItemStack diamondHat = new ItemStack(Material.DIAMOND_HELMET);
-		diamondHat.setItemMeta(threeHundred);
+		ItemMeta diamondHatMeta = diamondHat.getItemMeta();
+		diamondHatMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("DIAMOND_HELMET")));
+		diamondHat.setItemMeta(diamondHatMeta);
 		shopInv.setItem(12, diamondHat);
-		
-		// Diamond Chestplate for $2,600
+
 		ItemStack diamondChest = new ItemStack(Material.DIAMOND_CHESTPLATE);
-		diamondChest.setItemMeta(twentySixHundred);
+		ItemMeta diamondChestMeta = diamondChest.getItemMeta();
+		diamondChestMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("DIAMOND_CHESTPLATE")));
+		diamondChest.setItemMeta(diamondChestMeta);
 		shopInv.setItem(21, diamondChest);
-		
-		// Diamond Leggings for $1,000
+
 		ItemStack diamondLegs = new ItemStack(Material.DIAMOND_LEGGINGS);
-		diamondLegs.setItemMeta(oneThousand);
+		ItemMeta diamondLegsMeta = diamondLegs.getItemMeta();
+		diamondLegsMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("DIAMOND_LEGGINGS")));
+		diamondLegs.setItemMeta(diamondLegsMeta);
 		shopInv.setItem(30, diamondLegs);
-		
-		// Diamond Boots for $300
+
 		ItemStack diamondBoots = new ItemStack(Material.DIAMOND_BOOTS);
-		diamondBoots.setItemMeta(threeHundred);
+		ItemMeta diamondBootsMeta = diamondBoots.getItemMeta();
+		diamondBootsMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("DIAMOND_BOOTS")));
+		diamondBoots.setItemMeta(diamondBootsMeta);
 		shopInv.setItem(39, diamondBoots);
-		
-		// 10 Apples for $20
+
 		ItemStack apple = new ItemStack(Material.APPLE,10);
-		apple.setItemMeta(twenty);
+		ItemMeta appleMeta = apple.getItemMeta();
+		appleMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("APPLE")));
+		apple.setItemMeta(appleMeta);
 		shopInv.setItem(48, apple);
-		
-		// Creative mode block for anvil use $200
+
 		ItemStack brick = new ItemStack(Material.BRICK);
 		ItemMeta brickMeta = brick.getItemMeta();
 		ArrayList<String> brickLore = new ArrayList<String>();
-		brickLore.add(ChatColor.WHITE + "Price: $200.00 | " + ChatColor.ITALIC + "Allows for bypass with anvil.");
+		brickLore.add(ChatColor.AQUA + "Price: $200 " + ChatColor.ITALIC + (ChatColor.WHITE + "(Allows for bypass with anvil)"));
 		brickMeta.setDisplayName("Creative");
 		brickMeta.setLore(brickLore);
 		brick.setItemMeta(brickMeta);
 		shopInv.setItem(6, brick);
-		
-		// Crafting bench for $1,000
+
 		ItemStack bench = new ItemStack(Material.WORKBENCH);
 		ItemMeta benchMeta = brick.getItemMeta();
 		ArrayList<String> benchLore = new ArrayList<String>();
-		benchLore.add(ChatColor.WHITE + "Price: $1000.00 | " + ChatColor.ITALIC + "Allows player to craft 1 item.");
+		benchLore.add(ChatColor.AQUA + "Price: $1000 " + ChatColor.ITALIC + (ChatColor.WHITE + "(Allows player to craft 1 item.)"));
 		benchMeta.setDisplayName("Crafting (With item in hand, use /craft)");
 		benchMeta.setLore(benchLore);
 		bench.setItemMeta(benchMeta);
 		shopInv.setItem(7, bench);
-		
-		// Book for $50
+
 		ItemStack book = new ItemStack(Material.BOOK);
-		book.setItemMeta(fifty);
+		ItemMeta bookMeta = book.getItemMeta();
+		bookMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("BOOK")));
+		book.setItemMeta(bookMeta);
 		shopInv.setItem(24, book);
-		
-		// 10 ExpBottles for $100 
+
 		ItemStack expBottle = new ItemStack(Material.EXP_BOTTLE,10);
-		expBottle.setItemMeta(hundred);
+		ItemMeta expBottleMeta = expBottle.getItemMeta();
+		expBottleMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("EXP_BOTTLE")));
+		expBottle.setItemMeta(expBottleMeta);
 		shopInv.setItem(25, expBottle);
 		
 		Potion regen = new Potion(PotionType.REGEN);
 		Potion swift = new Potion(PotionType.SPEED);
 		Potion night = new Potion(PotionType.NIGHT_VISION);
 		Potion strength = new Potion(PotionType.STRENGTH);
-		
-		// Regeneration potion for $20
+
 		ItemStack pot1 = regen.toItemStack(1);
-		pot1.setItemMeta(twenty);
+		ItemMeta pot1Meta = pot1.getItemMeta();
+		pot1Meta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("POTION")));
+		pot1Meta.setDisplayName("Potions Currently Unavailable");
+		pot1.setItemMeta(pot1Meta);
 		shopInv.setItem(32, pot1);
-		
-		// Swiftness potion for $20
+
 		ItemStack pot2 = swift.toItemStack(1);
-		pot2.setItemMeta(twenty);
+		ItemMeta pot2Meta = pot2.getItemMeta();
+		pot2Meta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("POTION")));
+		pot2Meta.setDisplayName("Potions Currently Unavailable");
+		pot2.setItemMeta(pot2Meta);
 		shopInv.setItem(33, pot2);
-		
-		// Night Vision potion for $20
+
 		ItemStack pot3 = night.toItemStack(1);
-		pot3.setItemMeta(twenty);		
-		shopInv.setItem(34, pot3);		
-		
-		// Strength potion for $20
+		ItemMeta pot3Meta = pot3.getItemMeta();
+		pot3Meta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("POTION")));
+		pot3Meta.setDisplayName("Potions Currently Unavailable");
+		pot3.setItemMeta(pot3Meta);
+		shopInv.setItem(34, pot3);
+
 		ItemStack pot4 = strength.toItemStack(1);
-		pot4.setItemMeta(twenty);
+		ItemMeta pot4Meta = pot4.getItemMeta();
+		pot4Meta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("POTION")));
+		pot4Meta.setDisplayName("Potions Currently Unavailable");
+		pot4.setItemMeta(pot4Meta);
 		shopInv.setItem(35, pot4);
-		
-		// 10 Gold Ingots for $100
+
 		ItemStack gold = new ItemStack(Material.GOLD_INGOT,10);
-		gold.setItemMeta(hundred);
+		ItemMeta goldMeta = gold.getItemMeta();
+		goldMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("GOLD_INGOT")));
+		gold.setItemMeta(goldMeta);
 		shopInv.setItem(51, gold);
-		
-		// 10 Iron Ingots for $1,000
+
 		ItemStack iron = new ItemStack(Material.IRON_INGOT,10);
-		iron.setItemMeta(oneThousand);
+		ItemMeta ironMeta = iron.getItemMeta();
+		ironMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("IRON_INGOT")));
+		iron.setItemMeta(ironMeta);
 		shopInv.setItem(52, iron);
-		
-		// 10 Diamonds for $2,000
+
 		ItemStack diamond = new ItemStack(Material.DIAMOND,10);
-		diamond.setItemMeta(twoThousand);
+		ItemMeta diamondMeta = diamond.getItemMeta();
+		diamondMeta.setLore(Arrays.asList(ChatColor.AQUA + "Price: $" + shop.getString("DIAMOND")));
+		diamond.setItemMeta(diamondMeta);
 		shopInv.setItem(50, diamond);
-		
-		// Lapis for $50
+
 		ItemStack lapis = new ItemStack(Material.LAPIS_BLOCK);
 		ItemMeta lapisMeta = lapis.getItemMeta();
 		ArrayList<String> lapisLore = new ArrayList<String>();
-		lapisLore.add(ChatColor.WHITE + "Price: $50.00 | " + ChatColor.ITALIC + "Used for enchanting!");
+		lapisLore.add(ChatColor.AQUA + "Price: $50 " + ChatColor.ITALIC + (ChatColor.WHITE + "(Used for enchanting!)"));
 		lapisMeta.setLore(lapisLore);
 		lapis.setItemMeta(lapisMeta);
 		shopInv.setItem(53, lapis);
-	} 
+	}
 	
 	// Method to pass shop name to other classes.
 	public static String shopName(){return shopInv.getName();}
 	
 	// Method to pass the shop itself to other classes.
-	public static Inventory getShop(){return shopInv;}
+	public static Inventory getShop(){
+		return shopInv;
+	}
 }
 
